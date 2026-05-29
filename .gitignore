@@ -1,0 +1,20 @@
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.bak
+*.log
+
+# 本地私密内容（如有不便公开的草稿，可放进此目录，默认不入库）
+Drafts/private/
+*.local.md
