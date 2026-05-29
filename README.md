@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/AaronJiTuo/brain-template/releases/download/v0.1.0/brain-template-social-preview.jpg" alt="brain-template" width="100%">
+  <img src="https://repository-images.githubusercontent.com/1253325468/d3f20b07-c7e0-4c8b-ac8f-b5761b0a1e31" alt="brain-template" width="100%">
 </p>
 
 # brain-template
