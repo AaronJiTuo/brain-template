@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/AaronJiTuo/brain-template/releases/download/v0.1.0/brain-template-social-preview.jpg" alt="brain-template" width="100%">
+</p>
+
 # brain-template
 
 这是一个用于创建 **`*-brain` 项目** 的模板仓库。每当你要开始一个新项目时，点击 GitHub 上的 **「Use this template」** 即可基于它快速建立一个属于该项目的「数字大脑」。
@@ -66,6 +70,7 @@
 ## 用本模板创建新项目后（初始化清单）
 
 - [ ] 把仓库名改为 `<你的项目>-brain`，并设置好仓库描述。
+- [ ] 删除本 `README.md` 顶部的 brain-template 横幅图（那是模板自身的展示图，不属于你的项目）。
 - [ ] 用项目实际信息重写本 `README.md` 顶部的项目简介。
 - [ ] 检查 [`AGENTS.md`](./AGENTS.md)，按项目需要补充「项目专属约束」。
 - [ ] 在 `Releases/` 写下第一份核心文档（建议先写一份项目总览，作为 agent 的入口）。
