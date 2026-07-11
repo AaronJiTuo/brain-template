@@ -1,0 +1,18 @@
+{
+  "template": "brain-template",
+  "template_authority": "github.com/AaronJiTuo/brain-template",
+  "template_ref": "main",
+  "protocol_version": "1.1.0",
+  "protocol_released_at": "2026-07-11",
+  "managed_files": [
+    "AGENTS.md",
+    "README.md",
+    "Releases/README.md",
+    "Drafts/README.md",
+    "Drafts/00_灵感索引.md",
+    "Archive/README.md",
+    ".brain-template.json",
+    ".skills/release-organizer/SKILL.md",
+    ".skills/template-upgrader/SKILL.md"
+  ]
+}
