@@ -82,7 +82,7 @@
 旧 `*-brain` 项目不会因为模板仓库升级而自动知道新协议。第一次升级需要用户或 agent 明确触发，例如：
 
 ```text
-请按最新 brain-template 协议升级当前 brain，读取模板中的 .skills/template-upgrader/SKILL.md 执行。
+请按最新 brain-template 协议升级当前 brain，读取 GitHub AaronJiTuo/brain-template 仓库中 .skills/template-upgrader/SKILL.md 执行。
 ```
 
 完成 bootstrap 后，该项目未来就能通过 `.brain-template.json` 和本 skill 做后续自检与升级。
