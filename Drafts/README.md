@@ -6,7 +6,7 @@
 
 - 任何一闪而过的想法、需求片段、待探索的方案。
 - 收集到的外部资料（文章要点、截图要点、链接 + 摘要）。
-- 与 AI 的对话记录（导出为 markdown 直接丢进来）。
+- 与 AI 的对话记录（导出为 markdown 直接丢进来；从 ChatGPT / Gemini / 豆包等页面抓取完整对话时使用 `.skills/chat-capture/SKILL.md`）。
 - 半成品的梳理、想要做但还没定的事。
 - `00_灵感索引.md`：从历史 Draft 中摘出的轻量灵感入口。
 
@@ -41,6 +41,8 @@ last_reviewed: YYYY-MM-DD
 ## 给 AI agent 的提醒
 
 `Drafts/` 只作参考，不要当成权威结论。冲突时以 `Releases/` 为准。
+
+从 AI 对话页面或分享链接抓取完整对话并保存为 Draft 时，必须读取并执行 `.skills/chat-capture/SKILL.md`。长对话不能只抓首屏，必须通过浏览器滚动加载并记录完整性状态。
 
 从 Drafts 生成、汇总、重写或升级 Release 时，必须读取并执行 `.skills/release-organizer/SKILL.md`。不要全量扫描 Drafts；只处理本次用户指定、实际读取或明确用于生成 Release 的文件。
 

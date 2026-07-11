@@ -6,6 +6,7 @@
 
 - 根目录没有 `.brain-template.json`。
 - 缺少 `.skills/release-organizer/SKILL.md` 或 `.skills/template-upgrader/SKILL.md`。
+- 缺少 `.skills/chat-capture/SKILL.md`。
 - 缺少 `Drafts/00_灵感索引.md`。
 - `.brain-template.json` 中的 `protocol_version` 低于模板权威来源的当前协议版本。
 - `AGENTS.md` 未声明项目内 skills、Release 后处理或模板协议自检。
@@ -35,13 +36,14 @@
 
 3. 补齐模板协议文件。
    - `.brain-template.json`
+   - `.skills/chat-capture/SKILL.md`
    - `.skills/release-organizer/SKILL.md`
    - `.skills/template-upgrader/SKILL.md`
    - `Drafts/00_灵感索引.md`
 
 4. 更新说明文件。
-   - `AGENTS.md` 增加模板协议自检、项目内 skills、Release 后处理、Draft 状态和 Archive 新职责。
-   - `Drafts/README.md` 增加无状态 Draft、灵感索引和 Release 后处理说明。
+   - `AGENTS.md` 增加模板协议自检、项目内 skills、chat-capture 触发规则、Release 后处理、Draft 状态和 Archive 新职责。
+   - `Drafts/README.md` 增加无状态 Draft、AI 对话抓取、灵感索引和 Release 后处理说明。
    - `Releases/README.md` 增加来源与替代关系说明。
    - `Archive/README.md` 增加已吸收 Draft 可归档、默认不读 Archive 的说明。
    - `README.md` 增加 `.brain-template.json`、`.skills/`、`Drafts/00_灵感索引.md` 的结构说明。
@@ -59,8 +61,8 @@
   "template": "brain-template",
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
-  "protocol_version": "1.1.0",
-  "protocol_released_at": "2026-07-11",
+  "protocol_version": "1.2.0",
+  "protocol_released_at": "2026-07-12",
   "managed_files": [
     "AGENTS.md",
     "README.md",
@@ -69,6 +71,7 @@
     "Drafts/00_灵感索引.md",
     "Archive/README.md",
     ".brain-template.json",
+    ".skills/chat-capture/SKILL.md",
     ".skills/release-organizer/SKILL.md",
     ".skills/template-upgrader/SKILL.md"
   ]

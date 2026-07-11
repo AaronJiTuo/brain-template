@@ -37,10 +37,24 @@
 
 当任务语义匹配以下场景时，AI agent 必须显式读取对应的 `SKILL.md`，再执行任务：
 
+- 从 ChatGPT、Gemini、豆包或其他 AI 对话页面 / 分享链接抓取完整对话，并保存为 `Drafts/YYYY-MM-DD_对话主题.md`：读取 `.skills/chat-capture/SKILL.md`。
 - 从 `Drafts/` 汇总、生成、重写或升级 `Releases/` 文档：读取 `.skills/release-organizer/SKILL.md`。
 - 升级当前 brain 的模板协议、补齐 `.skills/`、同步目录 README 或 `.brain-template.json`：读取 `.skills/template-upgrader/SKILL.md`。
 
 只读取当前任务匹配的 skill，不要预读整个 `.skills/` 目录。`.skills/` 默认不作为项目内容参与总结，除非任务正是维护模板协议或项目内 skill。
+
+### chat-capture 触发规则
+
+当用户希望把 AI 聊天页面或分享链接中的完整对话沉淀到当前 brain 的 `Drafts/` 时，必须使用 `.skills/chat-capture/SKILL.md`。
+
+典型触发包括：
+
+- 用户给出 ChatGPT / Gemini / 豆包等对话分享链接，并要求“保存”“抓取”“沉淀”“归档”“转成 Draft”。
+- 用户要求“完整抓取长对话”“不断滚动直到加载完”“确保内容完整”。
+- 用户要求从已登录浏览器里的 AI 对话页面提取内容。
+- 用户说“把这段聊天保存到 brain / Drafts”。
+
+仅当用户只是讨论某个链接内容、没有表达保存或抓取意图时，不自动落盘。
 
 ## 你应该如何阅读这个仓库
 
