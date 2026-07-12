@@ -2,7 +2,7 @@
   "template": "brain-template",
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
-  "protocol_version": "1.2.0",
+  "protocol_version": "1.2.1",
   "protocol_released_at": "2026-07-12",
   "managed_files": [
     "AGENTS.md",
