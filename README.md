@@ -26,28 +26,29 @@
 ├── README.md          # 项目入口与说明（你正在看的这种文件）
 ├── AGENTS.md          # 给 AI agent 的操作指南（最重要）
 ├── .brain-template.json # 模板协议版本与托管文件清单
-├── .skills/           # 项目内流程技能，按需由 AGENTS.md 显式触发
+├── .skills/           # 项目内流程技能：Draft 整理、对话抓取、Release 整理等
 ├── Releases/          # 唯一事实来源：定稿的想法、设计、文档
-├── Drafts/            # 草稿区：零散灵感、外部信息、与 AI 的对话
+├── Drafts/            # 草稿区：根目录作收件箱，多文件主题与程序使用独立目录
 └── Archive/           # 归档区：已完成使命或被弃用的内容
 ```
 
 | 目录 | 定位 | 放什么 | 原则 |
 | --- | --- | --- | --- |
 | **`Releases/`** | 唯一事实来源 | 定稿的项目说明、设计方案、开发文档、规范、路线图 | 默认「可照着做」，不写不确定的猜想 |
-| **`Drafts/`** | 当前工作台 / AI 上下文素材 | 零碎想法、灵感、外部资料、与 AI 的对话记录、半成品梳理、`00_灵感索引.md` | 允许暂时混乱；无状态 Draft 默认是 `unreviewed`；被整理后要归档或补状态 |
+| **`Drafts/`** | 当前工作台 / AI 上下文素材 | 零碎想法、灵感、外部资料、与 AI 的对话记录、半成品梳理、验证程序 | 根目录只作临时收件箱；同主题 3 个文件时归组；程序从第 1 个文件起独立成目录 |
 | **`Archive/`** | 低频历史归档 | 已被吸收的 Draft、被替代的旧 Release、废弃方案、原始材料 | 默认不读，不删；仅用于追溯 |
-| **`.skills/`** | 项目内流程技能 | AI 对话抓取、Release 整理、模板协议升级等只服务 `*-brain` 的流程说明 | 不假设全局安装；由 `AGENTS.md` 按任务显式读取 |
+| **`.skills/`** | 项目内流程技能 | Draft 归组、AI 对话抓取、Release 整理、模板协议升级等只服务 `*-brain` 的流程说明 | 不假设全局安装；由 `AGENTS.md` 按任务显式读取 |
 
 ---
 
 ## 推荐工作流（从 0 到 1 的演进）
 
-1. **先丢进 `Drafts/`** —— 任何灵感、需求片段、外部文章、AI 对话先快速记录，不求完美；从 ChatGPT / Gemini / 豆包等页面完整抓取对话时，agent 必须执行 `.skills/chat-capture/SKILL.md`。
+1. **先丢进 `Drafts/`** —— 任何灵感、需求片段、外部文章、AI 对话先快速记录，不求完美；agent 创建 Draft 时必须执行 `.skills/draft-organizer/SKILL.md`，从 ChatGPT / Gemini / 豆包等页面完整抓取对话时还必须执行 `.skills/chat-capture/SKILL.md`。
 2. **持续打磨草稿** —— 每次迭代都让它更「可执行」：补流程、接口、示例、边界条件、风险、验证方式。
-3. **达到可交付标准后升级为 `Releases/`** —— 标准是：读者（人或 AI）不用追问你也能照做。凡是从 Drafts 生成 Release，agent 必须执行 `.skills/release-organizer/SKILL.md`。
-4. **同步处理原始 Draft** —— 已完全吸收的 Draft 移入 `Archive/`；部分吸收的 Draft 留在 `Drafts/` 并补状态；未进入 Release 但有价值的点摘入 `Drafts/00_灵感索引.md`。
-5. **被替代或过时后移入 `Archive/`** —— 并在 `Releases/` 的新文档里写明替代关系 / 迁移指引。
+3. **按主题自动归组** —— 普通 Draft 在同主题达到 3 个文件时进入主题目录；任何验证脚本、测试页面或可运行原型从第 1 个文件起就进入该程序的独立目录，不得平铺在 `Drafts/`。
+4. **达到可交付标准后升级为 `Releases/`** —— 标准是：读者（人或 AI）不用追问你也能照做。凡是从 Drafts 生成 Release，agent 必须执行 `.skills/release-organizer/SKILL.md`。
+5. **同步处理原始 Draft** —— 已完全吸收的 Draft 移入 `Archive/`；部分吸收的 Draft 留在 `Drafts/` 并补状态；未进入 Release 但有价值的点摘入 `Drafts/00_灵感索引.md`。
+6. **被替代或过时后移入 `Archive/`** —— 并在 `Releases/` 的新文档里写明替代关系 / 迁移指引。
 
 > 在项目推进过程中，这个 brain 会持续增删、调整。保持它与项目同步，就是保持你和 AI agent 之间的信息同步。
 
@@ -81,6 +82,7 @@
 - [ ] 在 `README.md` 保留一个「如何让 agent 开始 / 项目接手」小节，并把“新 agent 接手已有项目”的提示语改成你的项目语境（新人应可直接复制使用）。
 - [ ] 检查 [`AGENTS.md`](./AGENTS.md)，按项目需要补充「项目专属约束」。
 - [ ] 保留 `.brain-template.json` 与 `.skills/`，它们是模板协议的一部分；如未来升级模板，按 `.skills/template-upgrader/SKILL.md` 执行。
+- [ ] 保留 `.skills/draft-organizer/SKILL.md`；它负责 Draft 主题归组，并保证程序不会平铺在 `Drafts/` 根目录。
 - [ ] 保留 `Drafts/00_灵感索引.md`，作为长期轻量灵感入口。
 - [ ] 在 `Releases/` 写下第一份核心文档（建议先写一份项目总览，作为 agent 的入口）。
 - [ ] 删除本清单。

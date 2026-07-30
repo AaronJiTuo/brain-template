@@ -24,8 +24,8 @@
 ## 来源与替代关系
 
 本文吸收并替代：
-- Drafts/xxx.md
-- Drafts/yyy.md
+- Drafts/主题/xxx.md
+- Drafts/主题/yyy.md
 ```
 
 如果只是部分吸收，应写清楚已吸收和未处理的范围：
@@ -34,7 +34,7 @@
 ## 来源与替代关系
 
 本文部分吸收：
-- Drafts/xxx.md：已吸收 A/B，未处理 C
+- Drafts/主题/xxx.md：已吸收 A/B，未处理 C
 ```
 
 完成后还要按 `.skills/release-organizer/SKILL.md` 处理相关 Draft：归档已完全吸收的文件，给部分吸收的文件补状态，并把未进入 Release 的可复用灵感摘入 `Drafts/00_灵感索引.md`。

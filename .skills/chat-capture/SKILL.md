@@ -2,7 +2,9 @@
 
 ## 什么时候使用
 
-当用户希望把 ChatGPT、Gemini、豆包或其他 AI 聊天页面 / 分享链接中的完整对话抓取下来，并保存为当前 `*-brain` 项目的 `Drafts/YYYY-MM-DD_对话主题.md` 时，使用本 skill。
+当用户希望把 ChatGPT、Gemini、豆包或其他 AI 聊天页面 / 分享链接中的完整对话抓取下来，并保存为当前 `*-brain` 项目的 Draft 时，使用本 skill。
+
+本 skill 负责抓取和输出格式；目标目录必须同时按 `.skills/draft-organizer/SKILL.md` 判断。
 
 典型触发包括：
 
@@ -35,7 +37,8 @@
 1. 确认输入。
    - 记录用户提供的 URL、平台、期望主题名。
    - 如果用户未提供主题名，从页面标题、首条用户消息或对话主题中提炼一个简短文件名。
-   - 文件名格式为 `Drafts/YYYY-MM-DD_对话主题.md`，不要在文件名中加入平台名。
+   - 文件名格式为 `YYYY-MM-DD_对话主题.md`，不要在文件名中加入平台名。
+   - 按 `.skills/draft-organizer/SKILL.md` 选择路径：已有匹配主题目录时保存到该目录；加入后同主题达到 3 个文件时创建主题目录并归组；否则可暂存于 `Drafts/` 根目录。
 
 2. 打开页面。
    - 优先打开用户提供的分享链接。
@@ -79,7 +82,7 @@
    - 不写入任何 LLM 思考过程。
 
 9. 复核。
-   - 确认文件路径在 `Drafts/`。
+   - 确认文件路径在 `Drafts/` 或其主题目录中，并符合 `.skills/draft-organizer/SKILL.md`。
    - 确认文档只有一个 `#` 顶级标题。
    - 确认每条消息前都有 `<div data-speaker="...">` marker。
    - 确认 frontmatter 中有采集状态和完整性说明。
@@ -196,4 +199,4 @@ capture_method: playwright
 - 不要改写消息正文中的标题层级。
 - 不要默认生成额外 `.html` 或 `.json` 文件。
 - 不要把不完整采集标记为 `complete`。
-- 不要删除、覆盖或移动已有 Draft，除非用户明确要求。
+- 不要删除或覆盖已有 Draft。只有在 `.skills/draft-organizer/SKILL.md` 的归组规则明确触发时，才可移动本次主题关系明确的 Draft，并必须修复路径引用。

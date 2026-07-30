@@ -26,7 +26,7 @@
 
 1. 查看根目录是否存在 `.brain-template.json`。
 2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
-3. 如不存在，或缺少 `.skills/`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
+3. 如不存在，或缺少 `.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
 4. 需要升级时，先读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级；如果该文件也不存在，应从最新的 `brain-template` 获取该 skill 后再升级。
 
 升级模板协议时必须保守：不要删除 `Drafts/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容。
@@ -37,7 +37,8 @@
 
 当任务语义匹配以下场景时，AI agent 必须显式读取对应的 `SKILL.md`，再执行任务：
 
-- 从 ChatGPT、Gemini、豆包或其他 AI 对话页面 / 分享链接抓取完整对话，并保存为 `Drafts/YYYY-MM-DD_对话主题.md`：读取 `.skills/chat-capture/SKILL.md`。
+- 在 `Drafts/` 中创建、续写、移动或整理文件，或编写验证程序 / 测试原型：读取 `.skills/draft-organizer/SKILL.md`。
+- 从 ChatGPT、Gemini、豆包或其他 AI 对话页面 / 分享链接抓取完整对话，并保存为 Draft：依次读取 `.skills/chat-capture/SKILL.md` 和 `.skills/draft-organizer/SKILL.md`。
 - 从 `Drafts/` 汇总、生成、重写或升级 `Releases/` 文档：读取 `.skills/release-organizer/SKILL.md`。
 - 升级当前 brain 的模板协议、补齐 `.skills/`、同步目录 README 或 `.brain-template.json`：读取 `.skills/template-upgrader/SKILL.md`。
 
@@ -83,6 +84,8 @@
 - **`README.md` 必须保留「如何让 agent 开始 / 项目接手」入口**：确保后来加入的维护者不知道 `brain-template` 也能直接复制“接手语”启动 agent；若项目语境变化，及时更新该段提示语。
 - **`Releases/` 文档建议包含的小节**（按需取用）：背景 / 问题定义 · 目标与非目标 · 约束与假设 · 方案概览 · 关键决策与取舍（Why）· 风险与注意事项 · 验证方式 · TODO / 未决问题。
 - **`Drafts/` 文档**：用户可以直接写正文，不要求手动维护状态；无状态 Draft 默认视为 `unreviewed`。如果 agent 读过某个 Draft 但没有完全吸收它，应在文件顶部补状态元信息。
+- **`Drafts/` 主题归组**：根目录只作临时收件箱。同一主题达到 3 个文件时，agent 必须按 `.skills/draft-organizer/SKILL.md` 创建主题目录并归组；已有匹配目录时，新文件直接写入该目录。
+- **`Drafts/` 程序目录**：任何验证脚本、测试页面、可运行原型或其他程序，从第 1 个文件起就必须放入独立目录，绝不平铺在 `Drafts/` 根目录。
 - **`Drafts/00_灵感索引.md`**：用于保存从 Drafts 中摘出的、未进入 Release 但未来可能有价值的点。它是长期保留的轻量入口，不是权威事实层。
 - **`Archive/` 的范围**：既可以放被新版 Release 替代的旧 Release，也可以放已被 Release 完全吸收的 Draft、早期对话、废弃方案和原始材料。默认不要读 Archive，除非用户要求、Release 来源关系指向、灵感索引指向，或确有追溯需要。
 - **移动而非删除**：内容过时、被替代或已完成使命时移入 `Archive/`，并在新文档中写明替代 / 迁移关系。
@@ -90,9 +93,9 @@
 ## 重要约束
 
 - **讨论就是讨论，默认不落盘。** 和用户探讨问题时，方案、草图、对比、甚至生成结果（如 LOGO、配图、代码片段）都只在对话中呈现，**不要写入仓库**。只有当用户明确说「把上面的讨论整理成文档」或类似指令时，才生成文件——且默认放进 `Drafts/`。
-- **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。除此之外不要新增目录（如 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
+- **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。`Drafts/` 内可按 `.skills/draft-organizer/SKILL.md` 创建主题目录和程序目录；除此之外不要新增目录（如根级 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
   - 原因：你随手留下的目录和文件，会被后来的 agent 误当成「有用的、已确认的内容」，从而造成混乱、误导决策、浪费大量时间。宁可不留，也不要擅自留。
-- 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。
+- 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。获准编写的程序只能放进 `Drafts/` 下属于该程序的独立目录，并遵循 `.skills/draft-organizer/SKILL.md`。
 - **不要擅自删除 `Drafts/` 或 `Archive/` 的内容**；它们是上下文与历史。
 - 修改 `Releases/` 中的定稿内容前，确认这是用户的意图，因为其它人和 agent 都以此为准。
 

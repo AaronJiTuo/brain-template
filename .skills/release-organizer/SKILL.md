@@ -37,8 +37,8 @@
    ## 来源与替代关系
 
    本文吸收并替代：
-   - Drafts/xxx.md
-   - Drafts/yyy.md
+   - Drafts/主题/xxx.md
+   - Drafts/主题/yyy.md
    ```
 
    如果只是部分吸收：
@@ -47,7 +47,7 @@
    ## 来源与替代关系
 
    本文部分吸收：
-   - Drafts/xxx.md：已吸收 A/B，未处理 C
+   - Drafts/主题/xxx.md：已吸收 A/B，未处理 C
    ```
 
 4. 摘录遗留灵感。
@@ -58,6 +58,7 @@
 
 5. 处理 Draft 去留。
    - 完全吸收：移动到 `Archive/`。
+   - 完全吸收一个程序时，保持程序目录完整，不要把其中源码重新平铺。
    - 部分吸收：留在 `Drafts/`，在文件顶部补 frontmatter。
    - 仍在推进：留在 `Drafts/`，必要时标 `active`。
    - 明显过期但仍需留痕：移动到 `Archive/`。
@@ -84,6 +85,7 @@
    - `Drafts/` 中不应继续堆放已完全吸收的原始材料。
    - `Archive/` 中的文件不应被日常执行默认读取。
    - 文件移动后，Release 和灵感索引中的路径要准确。
+   - 部分吸收后仍留在 `Drafts/` 的文件继续符合 `.skills/draft-organizer/SKILL.md`，程序文件不得回到根目录。
 
 ## 命名建议
 
