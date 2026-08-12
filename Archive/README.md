@@ -13,10 +13,11 @@
 ## 原则
 
 - **不删除**，保留下来用于追溯「当初为什么这么决定 / 为什么放弃」。
-- 日常执行 **以 `Releases/` 为准**，不要照着 `Archive/` 里的内容做事。
+- 日常执行以 `Releases/` 的规范和 `.records/CURRENT.md` 的当前状态为准，不要照着 `Archive/` 里的内容做事。
 - 从 `Releases/` 移入归档时，记得在 `Releases/` 的新文档里写明替代 / 迁移关系。
 - 从 `Drafts/` 移入归档时，如仍有未来可复用的零散灵感，应先摘入 `Drafts/00_灵感索引.md`。
 - 归档程序或可运行原型时应整体移动其目录，保持一个程序一个目录，不要把源码重新平铺。
+- `.records/events/` 是追加式历史证据，不移入 `Archive/`；发现错误时按 `.skills/checkpoint-recorder/SKILL.md` 新增更正 Record。
 
 ## 给 AI agent 的提醒
 

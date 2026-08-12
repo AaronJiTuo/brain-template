@@ -2,8 +2,8 @@
   "template": "brain-template",
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
-  "protocol_version": "1.3.0",
-  "protocol_released_at": "2026-07-30",
+  "protocol_version": "2.0.0",
+  "protocol_released_at": "2026-08-12",
   "managed_files": [
     "AGENTS.md",
     "README.md",
@@ -11,8 +11,11 @@
     "Drafts/README.md",
     "Drafts/00_灵感索引.md",
     "Archive/README.md",
+    ".records/README.md",
+    ".records/CURRENT.md",
     ".brain-template.json",
     ".skills/chat-capture/SKILL.md",
+    ".skills/checkpoint-recorder/SKILL.md",
     ".skills/draft-organizer/SKILL.md",
     ".skills/release-organizer/SKILL.md",
     ".skills/template-upgrader/SKILL.md"

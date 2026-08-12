@@ -17,6 +17,7 @@
 1. **先不要建任何文件。** 通过对话向用户了解清楚：这是个什么项目、目标与非目标、当前阶段、关键约束与红线。
 2. **待用户确认后**，再把以上信息整理成一份项目总览，写入 `Releases/`（建议命名 `00_项目总览.md`）。
 3. 同步把项目专属约束补到本文件下方「项目专属约束」一节。
+4. 按 `.skills/checkpoint-recorder/SKILL.md` 更新 `.records/CURRENT.md`，并为已经确认的初始化结果建立第一条状态基线；不要为确认前的探索对话补造历史。
 
 > 一旦 `Releases/` 有了真实内容，本节判断标志即不成立，后续可忽略本节。
 
@@ -26,10 +27,10 @@
 
 1. 查看根目录是否存在 `.brain-template.json`。
 2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
-3. 如不存在，或缺少 `.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
+3. 如不存在，或缺少 `.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
 4. 需要升级时，先读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级；如果该文件也不存在，应从最新的 `brain-template` 获取该 skill 后再升级。
 
-升级模板协议时必须保守：不要删除 `Drafts/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容。
+升级模板协议时必须保守：不要删除 `Drafts/`、`.records/events/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容，也不要用模板空白状态覆盖项目已有的 `.records/CURRENT.md`。
 
 ## 项目内 skills
 
@@ -39,7 +40,8 @@
 
 - 在 `Drafts/` 中创建、续写、移动或整理文件，或编写验证程序 / 测试原型：读取 `.skills/draft-organizer/SKILL.md`。
 - 从 ChatGPT、Gemini、豆包或其他 AI 对话页面 / 分享链接抓取完整对话，并保存为 Draft：依次读取 `.skills/chat-capture/SKILL.md` 和 `.skills/draft-organizer/SKILL.md`。
-- 从 `Drafts/` 汇总、生成、重写或升级 `Releases/` 文档：读取 `.skills/release-organizer/SKILL.md`。
+- 工作形成重要决策、实质成果、发现、里程碑或状态变化，需要保存成果、创建 Record 或更新当前状态：读取 `.skills/checkpoint-recorder/SKILL.md`；如需保全对话中独有的成果，再读取 `.skills/draft-organizer/SKILL.md`。
+- 从 `Drafts/` 或 `.records/` 汇总、生成、重写或升级 `Releases/` 文档：读取 `.skills/release-organizer/SKILL.md`。
 - 升级当前 brain 的模板协议、补齐 `.skills/`、同步目录 README 或 `.brain-template.json`：读取 `.skills/template-upgrader/SKILL.md`。
 
 只读取当前任务匹配的 skill，不要预读整个 `.skills/` 目录。`.skills/` 默认不作为项目内容参与总结，除非任务正是维护模板协议或项目内 skill。
@@ -61,20 +63,23 @@
 
 接到任务时，按以下顺序建立上下文：
 
-1. **先读 `Releases/`** —— 这里是 **唯一事实来源（Single Source of Truth）**。定稿的项目总览、设计、规范都在这里，默认「可照着做」。如有项目总览类文档（如 `00_项目总览.md`），从它开始。
-2. **再按需读 `Drafts/`** —— 这里是草稿、灵感、外部资料以及与 AI 的对话记录。用于补充背景、理解意图与演进过程。**注意：草稿可能不准确、未定稿、甚至自相矛盾**，不要把它当作权威结论。
-3. **必要时查 `Archive/`** —— 已归档或被弃用的内容，用于追溯「为什么当初这么决定 / 为什么放弃了某方案」。**不要据此执行**当前工作。
+1. **先读 `Releases/`** —— 这里是规范性事实来源。定稿的项目总览、设计、规范都在这里，默认「可照着做」。如有项目总览类文档（如 `00_项目总览.md`），从它开始。
+2. **再读 `.records/CURRENT.md`** —— 这里是项目当前实际状态的紧凑入口，包含正在进行、近期变化、文档与现实的漂移以及下一步。
+3. **按需查少量 `.records/events/`** —— 只读取 `CURRENT.md` 指向、当前任务命中或确有追溯需要的事件。禁止为了建立上下文而全文扫描历史事件。
+4. **再按需读 `Drafts/`** —— 这里是草稿、灵感、外部资料以及与 AI 的对话记录。用于补充背景、理解意图与演进过程。**注意：草稿可能不准确、未定稿、甚至自相矛盾**，不要把它当作权威结论。
+5. **必要时查 `Archive/`** —— 已归档或被弃用的内容，用于追溯「为什么当初这么决定 / 为什么放弃了某方案」。**不要据此执行**当前工作。
 
-> 一句话：**冲突时以 `Releases/` 为准；`Drafts/` 只作参考；`Archive/` 只作历史。**
+> 一句话：**`Releases/` 说明“应该是什么”，最新有效 Record 说明“实际上是什么”；两者不一致时标记漂移，不静默覆盖。`Drafts/` 只作参考，`Archive/` 只作历史。**
 
 > 接手已有项目时，先完成阅读与理解对齐：复述你对项目和当前状态的理解，等待用户确认后再执行具体任务；确认前不要修改仓库内容。
 
 ## 你在这里的工作方式
 
 - **整理与沉淀**：帮用户把 `Drafts/` 里零散的信息结构化、提炼、对比方案、补全缺口。当某份草稿成熟到「可照着做」时，协助将其升级为 `Releases/`。
-- **Release 后处理**：凡是从 `Drafts/` 生成、汇总、重写或升级出 `Releases/` 文档，必须同时执行 `.skills/release-organizer/SKILL.md`：记录来源与替代关系、摘录遗留灵感、归档已完全吸收的 Draft、给部分吸收的 Draft 补状态。用户无需额外提醒。
-- **保持同步**：项目在推进，brain 也应随之更新。当出现新的决策、需求或想做的事时，主动建议把它落到对应目录。
-- **维护「当前状态」锚点**：项目总览里应有一节「当前状态 / 进行中 / 下一步」，它是后续接手者最先要看的东西。完成一段工作后，主动更新它，让任何新 agent 一眼就知道「现在到哪了」。
+- **自动留痕与成果保全**：一旦形成重要决策、实质成果或状态变化，主动执行 `.skills/checkpoint-recorder/SKILL.md`，无需等待用户额外提醒；对话中独有的实质成果要先保全到 `Drafts/`，不能只留下“已经完成”的摘要。
+- **Release 后处理**：凡是从 `Drafts/` 或 `.records/` 生成、汇总、重写或升级出 `Releases/` 文档，必须同时执行 `.skills/release-organizer/SKILL.md`：记录来源、证据与替代关系，处理相关 Draft，并保留不可变的历史 Record。用户无需额外提醒。
+- **保持同步**：项目在推进，brain 也应随之更新。纯探索讨论不落盘；已经形成的重要结果应及时保存，而不是等到对话结束。
+- **维护「当前状态」锚点**：`.records/CURRENT.md` 是后续接手者的当前状态入口。完成重要工作后更新受影响的小节，让新 agent 一眼就知道「现在到哪了」；不要把完整历史堆进 CURRENT。
 - **假设有其他 agent 并行**：落盘前先查看仓库最新内容，避免覆盖别人的改动；改动定稿内容前确认用户意图。
 - **写给未来的读者**：少写形容词，多写「可操作步骤 + 判定标准」。读者可能是几个月后的用户，也可能是另一个 agent。
 
@@ -87,17 +92,19 @@
 - **`Drafts/` 主题归组**：根目录只作临时收件箱。同一主题达到 3 个文件时，agent 必须按 `.skills/draft-organizer/SKILL.md` 创建主题目录并归组；已有匹配目录时，新文件直接写入该目录。
 - **`Drafts/` 程序目录**：任何验证脚本、测试页面、可运行原型或其他程序，从第 1 个文件起就必须放入独立目录，绝不平铺在 `Drafts/` 根目录。
 - **`Drafts/00_灵感索引.md`**：用于保存从 Drafts 中摘出的、未进入 Release 但未来可能有价值的点。它是长期保留的轻量入口，不是权威事实层。
+- **`.records/` 留痕**：事件一事一文件、默认控制在一页以内；只记录结果、理由、影响和证据位置，不保存完整聊天、命令流水或大段日志。历史事件不回写，纠错时新增更正 Record。
 - **`Archive/` 的范围**：既可以放被新版 Release 替代的旧 Release，也可以放已被 Release 完全吸收的 Draft、早期对话、废弃方案和原始材料。默认不要读 Archive，除非用户要求、Release 来源关系指向、灵感索引指向，或确有追溯需要。
 - **移动而非删除**：内容过时、被替代或已完成使命时移入 `Archive/`，并在新文档中写明替代 / 迁移关系。
 
 ## 重要约束
 
-- **讨论就是讨论，默认不落盘。** 和用户探讨问题时，方案、草图、对比、甚至生成结果（如 LOGO、配图、代码片段）都只在对话中呈现，**不要写入仓库**。只有当用户明确说「把上面的讨论整理成文档」或类似指令时，才生成文件——且默认放进 `Drafts/`。
-- **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。`Drafts/` 内可按 `.skills/draft-organizer/SKILL.md` 创建主题目录和程序目录；除此之外不要新增目录（如根级 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
+- **纯讨论默认不落盘，实质成果必须保全。** 普通探讨、临时举例、尚无结论的方案对比只留在对话中；一旦形成明确决策、可复用成果或重要状态变化，按 `.skills/checkpoint-recorder/SKILL.md` 主动留痕。用户明确说“本次不要记录”“不要落盘”或“只在对话中回答”时，不写 Draft、Record 或 CURRENT。
+- **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`.records/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。`Drafts/` 内可按 `.skills/draft-organizer/SKILL.md` 创建主题目录和程序目录；`.records/events/` 可按 `.skills/checkpoint-recorder/SKILL.md` 创建月份目录；除此之外不要新增目录（如根级 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
   - 原因：你随手留下的目录和文件，会被后来的 agent 误当成「有用的、已确认的内容」，从而造成混乱、误导决策、浪费大量时间。宁可不留，也不要擅自留。
 - 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。获准编写的程序只能放进 `Drafts/` 下属于该程序的独立目录，并遵循 `.skills/draft-organizer/SKILL.md`。
-- **不要擅自删除 `Drafts/` 或 `Archive/` 的内容**；它们是上下文与历史。
+- **不要擅自删除 `Drafts/`、`.records/events/` 或 `Archive/` 的内容**；它们是上下文与历史。历史 Record 通过新增更正记录纠错，不回写或删除。
 - 修改 `Releases/` 中的定稿内容前，确认这是用户的意图，因为其它人和 agent 都以此为准。
+- **v2.0.0 不提供自动 Git 协作。** 留痕流程不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge`、`push`、tag、release 或 PR；关联代码库更不得因留痕被自动提交或推送。用户另行明确授权的 Git 任务独立处理。
 
 ---
 

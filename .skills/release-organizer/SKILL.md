@@ -2,49 +2,57 @@
 
 ## 什么时候使用
 
-当用户要求或任务语义是在从 `Drafts/` 汇总、生成、重写或升级 `Releases/` 文档时，必须使用本流程。典型表达包括：
+当用户要求或任务语义是在从 `Drafts/` 或 `.records/` 汇总、生成、重写或升级 `Releases/` 文档时，必须使用本流程。典型表达包括：
 
 - “整理成 Release”
 - “落到 Releases”
 - “把这些 Drafts 汇总成正式文档”
 - “基于 Drafts 生成项目总览 / 设计文档 / 规范”
+- “把最近的 Record / 当前状态更新进 Release”
 
 用户无需额外提醒“记录灵感并归档 Drafts”；这是本流程的一部分。
 
 ## 输入边界
 
-只处理本次相关 Draft：
+只处理本次相关 Draft 和 Record：
 
 - 用户明确指定的 Draft。
 - Agent 本次实际读取并用于生成 Release 的 Draft。
 - Release 文档中明确声明吸收或部分吸收的 Draft。
+- 用户明确指定的 Record。
+- `.records/CURRENT.md` 中与本次 Release 直接相关的状态和链接。
+- Agent 本次实际读取并用于生成 Release 的 Record。
 
-不要为了整理而全量扫描整个 `Drafts/`。不要读取 `Archive/`，除非用户明确要求、当前 Release 来源关系指向、`Drafts/00_灵感索引.md` 指向，或确有追溯需要。
+不要为了整理而全量扫描整个 `Drafts/` 或 `.records/events/`。不要读取 `Archive/`，除非用户明确要求、当前 Release 来源关系指向、`Drafts/00_灵感索引.md` 指向，或确有追溯需要。
 
 ## 执行步骤
 
-1. 确认本次输入 Draft 清单。
-   - 在动手前列出本次会处理的 Draft。
+1. 确认本次输入清单。
+   - 在动手前列出本次会处理的 Draft 和 Record。
    - 无状态 Draft 默认视为 `unreviewed`，不要要求用户补状态。
+   - Record 的 `certainty` 必须与证据强度一致；`reported` 或 `tentative` 不能直接提升为 Release 权威结论。
 
 2. 生成或更新 Release。
    - Release 必须达到“读者不用追问也能照做”的标准。
    - 不确定、未验证、仍只是灵感的内容不要写成权威结论。
 
-3. 在 Release 末尾写入来源与替代关系。
+3. 在 Release 末尾写入来源、证据与替代关系。
 
    ```md
-   ## 来源与替代关系
+   ## 来源与证据
 
    本文吸收并替代：
    - Drafts/主题/xxx.md
    - Drafts/主题/yyy.md
+
+   本文依据：
+   - .records/events/YYYY-MM/YYYY-MM-DD_HHMMSS_主题.md
    ```
 
    如果只是部分吸收：
 
    ```md
-   ## 来源与替代关系
+   ## 来源与证据
 
    本文部分吸收：
    - Drafts/主题/xxx.md：已吸收 A/B，未处理 C
@@ -80,12 +88,18 @@
    - `active`
    - `reference`
 
-7. 复核。
+7. 处理相关当前状态。
+   - 如果本次 Release 更新解决了 `.records/CURRENT.md` 中的文档与现实漂移，更新对应漂移项。
+   - 不把完整 Release 摘要复制到 CURRENT；只保留仍影响当前工作的状态和链接。
+   - Release 是重大结果时，在全部后处理完成后执行 `.skills/checkpoint-recorder/SKILL.md`，创建一条结果级 Record；Record 的创建过程不得递归触发新 Record。
+
+8. 复核。
    - `Releases/` 中的结论不能依赖未读 Archive 才能理解。
    - `Drafts/` 中不应继续堆放已完全吸收的原始材料。
    - `Archive/` 中的文件不应被日常执行默认读取。
    - 文件移动后，Release 和灵感索引中的路径要准确。
    - 部分吸收后仍留在 `Drafts/` 的文件继续符合 `.skills/draft-organizer/SKILL.md`，程序文件不得回到根目录。
+   - 被引用的 Record 路径准确，且历史 Record 没有被移动、删除或回写。
 
 ## 命名建议
 
@@ -100,6 +114,8 @@
 
 - 不要全量扫描 `Archive/`。
 - 不要删除 Draft 或 Archive 内容。
+- 不要移动、删除或回写历史 Record；若发现错误，按 `checkpoint-recorder` 新增更正记录。
 - 不要把未确认灵感写成 Release 结论。
 - 不要为了补状态而改写用户草稿正文。
 - 不要处理与本次 Release 无关的 Draft。
+- 不要为了生成 Release 全量扫描 `.records/events/`。
