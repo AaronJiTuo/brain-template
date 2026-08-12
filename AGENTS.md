@@ -26,11 +26,24 @@
 本仓库可能由 `brain-template` 的不同版本创建。接手已有 `*-brain` 项目时，除了阅读项目内容，还要检查模板协议是否完整：
 
 1. 查看根目录是否存在 `.brain-template.json`。
-2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
+2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、更新摘要、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
 3. 如不存在，或缺少 `.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
-4. 需要升级时，先读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级；如果该文件也不存在，应从最新的 `brain-template` 获取该 skill 后再升级。
+4. 如发现本地协议不完整，先向用户说明；用户明确同意升级后，再读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级。如果该文件也不存在，应从 `brain-template` 权威来源的同一版本快照获取该 skill。
 
 升级模板协议时必须保守：不要删除 `Drafts/`、`.records/events/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容，也不要用模板空白状态覆盖项目已有的 `.records/CURRENT.md`。
+
+### 正常任务结束时检查新版本
+
+每次正常项目任务已经完成并通过必要验收、准备给出最终回复时，执行一次轻量、只读的模板版本检查：
+
+1. 仅当当前仓库具有有效的 `.brain-template.json`，且其中 `template_authority` **恰好为** `github.com/AaronJiTuo/brain-template` 时才检查。
+2. 从该固定权威来源的 `template_ref` 读取最新 `.brain-template.json`，只比较符合 SemVer 的 `protocol_version`；`protocol_released_at` 和 `protocol_summary` 不参与版本大小判断。
+3. 没有新版时完全不提示。网络失败、超时、权限限制、返回内容无效或无法可靠判断时也完全不提示，并且不得影响原任务结果。
+4. 只有确认远端版本高于本地版本时，才在最终回复末尾附加一条可忽略的提醒，写明当前版本、最新版本和远端 `protocol_summary`（如有），询问用户是否升级；原任务必须先正常交付，不能把升级询问当作原任务的阻塞项。
+5. 用户未回应、忽略或没有明确同意时，不执行任何升级，也不记录“已忽略”状态；后续正常任务结束时仍可再次提醒。
+6. 用户明确同意后，才在下一轮读取并执行 `.skills/template-upgrader/SKILL.md`。正式升级前必须重新查询远端状态，解析 `template_ref` 当前对应的精确 commit SHA，并从同一个 SHA 获取 manifest、upgrader 和托管文件，避免一次升级混用不同快照。
+
+以下情况跳过检查且不提示：用户明确禁止联网；当前任务尚未结束；仅在进行等待、监控或过程性汇报；当前任务本身就是模板检查或模板升级；当前仓库就是 `brain-template` 权威模板仓库。版本检查、升级提醒和用户忽略本身不创建 Record、不更新 `.records/CURRENT.md`，也不触发任何 Git 写操作。
 
 ## 项目内 skills
 
@@ -104,7 +117,7 @@
 - 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。获准编写的程序只能放进 `Drafts/` 下属于该程序的独立目录，并遵循 `.skills/draft-organizer/SKILL.md`。
 - **不要擅自删除 `Drafts/`、`.records/events/` 或 `Archive/` 的内容**；它们是上下文与历史。历史 Record 通过新增更正记录纠错，不回写或删除。
 - 修改 `Releases/` 中的定稿内容前，确认这是用户的意图，因为其它人和 agent 都以此为准。
-- **v2.0.0 不提供自动 Git 协作。** 留痕流程不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge`、`push`、tag、release 或 PR；关联代码库更不得因留痕被自动提交或推送。用户另行明确授权的 Git 任务独立处理。
+- **当前协议不提供自动 Git 协作。** 留痕、版本检查和升级流程不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge`、`push`、tag、release 或 PR；关联代码库更不得因此被自动提交或推送。用户另行明确授权的 Git 任务独立处理。
 
 ---
 

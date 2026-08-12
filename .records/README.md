@@ -41,4 +41,4 @@ Agent 接手项目时先读 `Releases/` 的核心入口，再读 `CURRENT.md`。
 
 ## Git 边界
 
-brain-template 2.0.0 只提供留痕，不提供自动协作：创建或更新 Record **不会自动执行** `git add`、`commit`、`pull`、`rebase` 或 `push`。Git 操作仍需用户在具体任务中明确要求。
+当前 brain-template 协议不提供自动 Git 协作：创建或更新 Record **不会自动执行** `git add`、`commit`、`pull`、`rebase` 或 `push`。Git 操作仍需用户在具体任务中明确要求。
