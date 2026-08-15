@@ -21,7 +21,7 @@
 - 长对话必须在滚动过程中持续采集和去重，不要等滚动结束后只抓一次 DOM。
 - 默认只保存一个 Markdown Draft，不额外保存 `.html` 或 `.json`。
 - 对话正文保持原样，不改写正文中的 Markdown 标题层级。
-- 说话人边界用独立 HTML marker 表示，不使用 Markdown 标题，也不包裹正文。
+- 说话人边界用独立、整行高对比的 HTML marker 表示：用户使用蓝色，assistant 使用绿色；不使用 Markdown 标题，也不包裹正文。
 - 最终 Draft 只保存正式对话消息，不保存 LLM 的思考过程；思考过程对后期阅读和项目沉淀无用。
 - 平台展示的搜索过程、工具调用过程、调试日志等非正式消息默认不写入 Draft，除非用户明确要求保留。
 - 如果无法证明完整，应在 Draft 中明确标记 `capture_status: partial` 或 `capture_status: uncertain`，不要假装完整。
@@ -78,13 +78,13 @@
 8. 生成 Draft。
    - 使用本 skill 下方的 Markdown 格式。
    - 正文不做标题降级，不重写用户或 assistant 的 Markdown。
-   - 只在每条消息前插入 HTML speaker marker。
+   - 只在每条消息前插入带内联样式的 HTML speaker marker；用户和 assistant 必须使用不同颜色。
    - 不写入任何 LLM 思考过程。
 
 9. 复核。
    - 确认文件路径在 `Drafts/` 或其主题目录中，并符合 `.skills/draft-organizer/SKILL.md`。
    - 确认文档只有一个 `#` 顶级标题。
-   - 确认每条消息前都有 `<div data-speaker="...">` marker。
+   - 确认每条消息前都有 `<div data-speaker="..." style="...">` marker，且角色颜色、图标和标签符合本 skill 的映射。
    - 确认 frontmatter 中有采集状态和完整性说明。
    - 确认最终 Draft 中没有 LLM 思考过程、搜索过程、工具调用过程或调试日志。
 
@@ -112,11 +112,11 @@ capture_method: playwright
 - 内容过滤：已移除 LLM 思考过程、搜索过程或工具调用过程；最终 Draft 只保留正式对话。
 - 备注：如使用登录态原始页面补采，在这里说明。
 
-<div data-speaker="user">001 用户说：</div>
+<div data-speaker="user" style="display:block; width:100%; box-sizing:border-box; margin:1.5em 0 0.75em; padding:0.7em 1em; border-radius:6px; background:#0969da; color:#ffffff; font-size:1.25em; font-weight:700; line-height:1.4;"><strong>👤 001 用户说：</strong></div>
 
 这里是用户说原文。
 
-<div data-speaker="assistant">002 ChatGPT 说：</div>
+<div data-speaker="assistant" style="display:block; width:100%; box-sizing:border-box; margin:1.5em 0 0.75em; padding:0.7em 1em; border-radius:6px; background:#1f883d; color:#ffffff; font-size:1.25em; font-weight:700; line-height:1.4;"><strong>🤖 002 ChatGPT 说：</strong></div>
 
 ## 这里仍然是 assistant 原文里的二级标题
 
@@ -128,7 +128,9 @@ capture_method: playwright
 - 顶部只允许一个 `# 对话主题`。
 - frontmatter 分隔线使用 `---`。
 - 说话人 marker 使用英文半角双引号。
-- marker 独立成行，后面空一行，再写消息正文。
+- marker 必须保持为一行 HTML，独立成行；后面空一行，再写消息正文。
+- 用户 marker 固定使用蓝色 `#0969da` 和 `👤`，assistant marker 固定使用绿色 `#1f883d` 和 `🤖`，不要按平台随意换色。
+- marker 必须保留 `width:100%`、背景色、白色大号粗体和 `<strong>`；`<strong>` 与角色图标是渲染器过滤内联样式时的降级提示。
 - marker 不包裹正文，避免 Markdown 渲染器在 HTML block 内不解析 Markdown。
 - 消息正文保持原样；不要为了层级整洁而改写正文里的 `##`、`###`。
 - 消息正文只允许是正式对话内容；不要把 LLM 思考过程作为正文保存。
@@ -152,21 +154,25 @@ capture_method: playwright
 
 ## 说话人 marker
 
-格式：
+用户与 assistant 使用以下固定格式；只替换序号和 assistant 的展示名称，不改写样式：
 
 ```md
-<div data-speaker="{role}">{index:03d} {speaker_label}说：</div>
+<div data-speaker="user" style="display:block; width:100%; box-sizing:border-box; margin:1.5em 0 0.75em; padding:0.7em 1em; border-radius:6px; background:#0969da; color:#ffffff; font-size:1.25em; font-weight:700; line-height:1.4;"><strong>👤 {index:03d} 用户说：</strong></div>
+
+<div data-speaker="assistant" style="display:block; width:100%; box-sizing:border-box; margin:1.5em 0 0.75em; padding:0.7em 1em; border-radius:6px; background:#1f883d; color:#ffffff; font-size:1.25em; font-weight:700; line-height:1.4;"><strong>🤖 {index:03d} {speaker_label}说：</strong></div>
 ```
 
 常见映射：
 
-- 用户：`<div data-speaker="user">001 用户说：</div>`
-- ChatGPT：`<div data-speaker="assistant">002 ChatGPT 说：</div>`
-- Gemini：`<div data-speaker="assistant">002 Gemini 说：</div>`
-- 豆包：`<div data-speaker="assistant">002 豆包说：</div>`
+- 用户：蓝色背景、`👤`、`用户说：`。
+- ChatGPT：绿色背景、`🤖`、`ChatGPT 说：`。
+- Gemini：绿色背景、`🤖`、`Gemini 说：`。
+- 豆包：绿色背景、`🤖`、`豆包说：`。
 - 系统或工具消息：仅在用户明确要求保留时使用 `data-speaker="system"` 或 `data-speaker="tool"`。
 
 如果平台无法可靠区分 assistant 名称，使用平台名作为 `speaker_label`；如果平台也无法确认，使用 `AI`。
+
+`style` 可能被严格的 Markdown 渲染器清洗，因此 marker 不能只靠颜色表达角色：必须同时保留 `data-speaker`、`<strong>`、角色图标、序号和说话人文字。不要为了兼容性改用 Markdown 标题；这会重新引入正文标题层级冲突。
 
 ## 完整性状态
 

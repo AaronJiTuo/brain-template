@@ -87,9 +87,9 @@
   "template": "brain-template",
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
-  "protocol_version": "2.1.0",
-  "protocol_released_at": "2026-08-12",
-  "protocol_summary": "新增正常任务结束时的静默版本检查和用户确认后升级机制",
+  "protocol_version": "2.1.1",
+  "protocol_released_at": "2026-08-15",
+  "protocol_summary": "优化 chat-capture 说话人分隔条，新增用户与 AI 的高对比整行样式",
   "managed_files": [
     "AGENTS.md",
     "README.md",
