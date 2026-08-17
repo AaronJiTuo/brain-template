@@ -26,6 +26,7 @@
 - 不覆盖 `AGENTS.md` 的「项目专属约束」。
 - 不覆盖项目已经改写过的 root `README.md` 项目介绍。
 - 可以补齐或更新 `.LICENSE.brain-template`，但不新增、删除或覆盖下游项目自己的 root `LICENSE`。
+- Windows 上只允许为当前仓库设置 `core.hideDotFiles=true` 并维护根级点路径的 Hidden 属性；不得修改用户的全局 Git 配置。
 - 只补齐或更新模板协议相关文件和说明。
 
 发现新版不等于获得升级授权。正常任务结束时的版本检查只负责读取远端 manifest、比较版本并在确有新版时提醒；只有用户明确同意后，才能执行本 skill。用户忽略或未明确同意时，什么也不做。
@@ -35,6 +36,7 @@
 1. 读取当前结构。
    - 查看 `AGENTS.md`、`README.md`、`Releases/README.md`、`Drafts/README.md`、`.records/README.md`、`.records/CURRENT.md`、`Archive/README.md`。
    - 查看是否存在 `.brain-template.json`、`.LICENSE.brain-template`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md`；只识别 root `LICENSE` 是否存在，不读取或改写其许可选择。
+   - 如果运行在 Windows，读取当前仓库的 `core.hideDotFiles`，并检查根目录现有点路径是否带 Hidden 属性；只读取当前仓库配置，不读取或修改全局配置。
    - 查看 git 状态，避免覆盖用户正在编辑的改动。
 
 2. 固定权威版本快照。
@@ -75,7 +77,18 @@
 
    许可文件是例外边界：`.LICENSE.brain-template` 是上游模板材料的 MIT 声明，可以按权威快照同步；root `LICENSE` 属于下游项目自身选择，升级流程不得从模板仓库复制、替换或删除它。
 
-6. 复核。
+6. 执行 Windows 隐藏属性后处理。
+   - 仅在当前工作区运行于 Windows 时执行；macOS 与 Linux 跳过。
+   - 如果当前目录是 Git 工作区，执行 `git config --local core.hideDotFiles true`。这是仅影响当前工作区显示方式的窄范围例外；不得使用 `--global` 或 `--system`，也不得据此执行任何其他 Git 写操作。
+   - 所有协议文件和说明更新完成后，重新枚举仓库根目录中所有以 `.` 开头的文件与目录并设置 Hidden 属性。`core.hideDotFiles=true` 只兜底由 Git 新创建的点路径，本步骤负责 agent、脚本或升级器直接创建以及属性丢失的路径：
+
+     ```powershell
+     Get-ChildItem -Force -LiteralPath . |
+       Where-Object { $_.Name.StartsWith('.') } |
+       ForEach-Object { attrib.exe +H "$($_.FullName)" }
+     ```
+
+7. 复核。
    - 确认 `AGENTS.md` 没有丢失项目专属约束。
    - 确认没有删除历史内容。
    - 确认 `.skills/draft-organizer/SKILL.md` 已存在，且协议明确禁止程序平铺在 `Drafts/` 根目录。
@@ -83,6 +96,22 @@
    - 确认旧项目已有 `.records/CURRENT.md` 和 `.records/events/` 没有被覆盖或删除。
    - 确认 `.LICENSE.brain-template` 已存在，且升级没有新增、删除或改写 root `LICENSE`。
    - 确认 `.brain-template.json` 的 `template_authority`、`template_ref`、`protocol_version`、`protocol_released_at`、`protocol_summary` 和 `managed_files` 与实际文件一致。
+   - 如果运行在 Windows，确认当前仓库 `core.hideDotFiles` 的值为 `true`，并重新读取根级点路径的文件属性；任何一项缺少 Hidden 属性都视为升级未完成。可用以下 PowerShell 验收：
+
+     ```powershell
+     if ((git config --local --get core.hideDotFiles) -ne 'true') {
+       throw 'core.hideDotFiles is not true'
+     }
+     $visibleDotItems = Get-ChildItem -Force -LiteralPath . |
+       Where-Object {
+         $_.Name.StartsWith('.') -and
+         -not ($_.Attributes -band [System.IO.FileAttributes]::Hidden)
+       }
+     if ($visibleDotItems) {
+       throw "Dot paths are not hidden: $($visibleDotItems.Name -join ', ')"
+     }
+     ```
+
    - 确认正常任务结束时只有发现更高版本才提醒；无更新、网络失败、无法判断和用户未同意时均不修改、不提示、不阻塞。
    - 用 git diff 检查升级只触及模板协议相关内容。
 
@@ -95,7 +124,7 @@
   "template_ref": "main",
   "protocol_version": "2.2.0",
   "protocol_released_at": "2026-08-17",
-  "protocol_summary": "完善模板初始化清理与上游元信息保留机制",
+  "protocol_summary": "完善模板初始化清理、上游元信息保留和 Windows 点路径隐藏机制",
   "managed_files": [
     ".LICENSE.brain-template",
     "AGENTS.md",
@@ -140,5 +169,6 @@
 - 不要改写项目事实，只升级流程协议。
 - 不要为旧项目补造历史 Record。
 - 不要为下游项目引入 root `LICENSE`，也不要删除或覆盖下游项目已有的 root `LICENSE`。
+- 不要使用 `git config --global` 或 `git config --system` 改变用户的点文件隐藏偏好；Windows 隐藏机制只允许设置当前仓库的 `core.hideDotFiles`。
 - 不要因为发现新版或用户同意升级，就推断用户授权了 commit、pull、push 或任何关联代码库 Git 写操作。
 - 不要在用户确认前下载并执行远端 upgrader；版本检查阶段只能只读获取远端 manifest。

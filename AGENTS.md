@@ -115,10 +115,11 @@
 - **纯讨论默认不落盘，实质成果必须保全。** 普通探讨、临时举例、尚无结论的方案对比只留在对话中；一旦形成明确决策、可复用成果或重要状态变化，按 `.skills/checkpoint-recorder/SKILL.md` 主动留痕。用户明确说“本次不要记录”“不要落盘”或“只在对话中回答”时，不写 Draft、Record 或 CURRENT。
 - **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`.records/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。`Drafts/` 内可按 `.skills/draft-organizer/SKILL.md` 创建主题目录和程序目录；`.records/events/` 可按 `.skills/checkpoint-recorder/SKILL.md` 创建月份目录；除此之外不要新增目录（如根级 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
   - 原因：你随手留下的目录和文件，会被后来的 agent 误当成「有用的、已确认的内容」，从而造成混乱、误导决策、浪费大量时间。宁可不留，也不要擅自留。
+- **Windows 点路径隐藏。** 当前工作区运行在 Windows 时，冷启动按 README 初始化清单设置本仓库 `core.hideDotFiles=true` 并为现有根级点路径补 Hidden 属性；模板升级或以后新增、重建根级点路径后，按 `.skills/template-upgrader/SKILL.md` 重跑 Hidden 属性修复。只使用 `--local`，不得修改用户的全局 Git 配置。macOS 与 Linux 依赖点前缀的原生隐藏语义，不执行该步骤。
 - 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。获准编写的程序只能放进 `Drafts/` 下属于该程序的独立目录，并遵循 `.skills/draft-organizer/SKILL.md`。
 - **不要擅自删除 `Drafts/`、`.records/events/` 或 `Archive/` 的内容**；它们是上下文与历史。历史 Record 通过新增更正记录纠错，不回写或删除。
 - 修改 `Releases/` 中的定稿内容前，确认这是用户的意图，因为其它人和 agent 都以此为准。
-- **当前协议不提供自动 Git 协作。** 留痕、版本检查和升级流程不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge`、`push`、tag、release 或 PR；关联代码库更不得因此被自动提交或推送。用户另行明确授权的 Git 任务独立处理。
+- **当前协议不提供自动 Git 协作。** 留痕、版本检查和升级流程不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge`、`push`、tag、release 或 PR；关联代码库更不得因此被自动提交或推送。Windows 上的 `git config --local core.hideDotFiles true` 是仅影响当前工作区显示方式的窄范围例外，不扩展任何 Git 交付授权。用户另行明确授权的 Git 任务独立处理。
 
 ---
 

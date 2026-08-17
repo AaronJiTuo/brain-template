@@ -96,6 +96,15 @@
 - [ ] 把仓库名改为 `<你的项目>-brain`，并设置好仓库描述。
 - [ ] 删除本 `README.md` 顶部的 brain-template 横幅图（那是模板自身的展示图，不属于你的项目）。
 - [ ] 删除模板自带的根目录 `LICENSE`，保留 `.LICENSE.brain-template`；与移除横幅一样直接执行，无需用户参与或选择项目许可证。
+- [ ] 如果当前工作区运行在 Windows：设置当前仓库的 `core.hideDotFiles=true`，再为根目录所有以 `.` 开头的文件和目录补上 Hidden 属性；macOS 与 Linux 跳过。
+
+    ```powershell
+    git config --local core.hideDotFiles true
+    Get-ChildItem -Force -LiteralPath . |
+      Where-Object { $_.Name.StartsWith('.') } |
+      ForEach-Object { attrib.exe +H "$($_.FullName)" }
+    ```
+
 - [ ] 用项目实际信息重写本 `README.md` 顶部的项目简介。
 - [ ] 在 `README.md` 保留一个「如何让 agent 开始 / 项目接手」小节，并把“新 agent 接手已有项目”的提示语改成你的项目语境（新人应可直接复制使用）。
 - [ ] 检查 [`AGENTS.md`](./AGENTS.md)，按项目需要补充「项目专属约束」。
