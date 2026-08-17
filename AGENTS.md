@@ -18,7 +18,8 @@
 2. **待用户确认后**，再把以上信息整理成一份项目总览，写入 `Releases/`（建议命名 `00_项目总览.md`）。
 3. 同步把项目专属约束补到本文件下方「项目专属约束」一节。
 4. 按 `.skills/checkpoint-recorder/SKILL.md` 更新 `.records/CURRENT.md`，并为已经确认的初始化结果建立第一条状态基线；不要为确认前的探索对话补造历史。
-5. 完成根目录 `README.md` 的初始化清单，包括改写项目入口、移除模板横幅、处理根目录许可证并保留 `.LICENSE.brain-template`；最后删除该清单。
+5. 完成根目录 `README.md` 的初始化清单，包括改写项目入口和移除模板横幅；最后删除该清单。
+6. 执行模板内部清理：删除模板随附的 root `LICENSE`，保留 `.LICENSE.brain-template`。这是初始化 housekeeping，不要求用户选择或讨论项目许可证，也不自动为下游项目创建新的 root `LICENSE`。
 
 > 一旦 `Releases/` 有了真实内容，本节判断标志即不成立，后续可忽略本节。
 
