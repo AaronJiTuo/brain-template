@@ -95,7 +95,7 @@
   "template_ref": "main",
   "protocol_version": "2.2.0",
   "protocol_released_at": "2026-08-17",
-  "protocol_summary": "增加双文件 MIT 许可机制，区分上游模板授权与下游项目许可证",
+  "protocol_summary": "增加隐藏的上游 MIT 许可声明，避免下游项目被自动识别为 MIT",
   "managed_files": [
     ".LICENSE.brain-template",
     "AGENTS.md",
@@ -139,6 +139,6 @@
 - 不要替用户判断旧 Releases 已过期并自动归档。
 - 不要改写项目事实，只升级流程协议。
 - 不要为旧项目补造历史 Record。
-- 不要把模板仓库的 root `LICENSE` 复制到下游项目，也不要删除或覆盖下游项目已有的 root `LICENSE`。
+- 不要为下游项目引入 root `LICENSE`，也不要删除或覆盖下游项目已有的 root `LICENSE`。
 - 不要因为发现新版或用户同意升级，就推断用户授权了 commit、pull、push 或任何关联代码库 Git 写操作。
 - 不要在用户确认前下载并执行远端 upgrader；版本检查阶段只能只读获取远端 manifest。
