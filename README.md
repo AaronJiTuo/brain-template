@@ -23,6 +23,7 @@
 
 ```
 <your-project>-brain/
+├── .LICENSE.brain-template # 上游模板材料的 MIT 许可声明，不决定项目整体许可证
 ├── README.md          # 项目入口与说明（你正在看的这种文件）
 ├── AGENTS.md          # 给 AI agent 的操作指南（最重要）
 ├── .brain-template.json # 模板协议版本与托管文件清单
@@ -80,7 +81,7 @@
 **启动新项目（冷启动）：**
 
 ```
-这是一个刚用 brain-template 创建的新 `*-brain`。请先读 `AGENTS.md`，按其中的「冷启动」流程：先通过对话了解本项目，等我确认后再整理项目总览。
+这是一个刚用 brain-template 创建的新 `*-brain`。请先读 `AGENTS.md`，按其中的「冷启动」流程：先通过对话了解本项目，等我确认后再整理项目总览，并完成 `README.md` 中的初始化清单。
 ```
 
 **新 agent 接手已有项目：**
@@ -97,6 +98,9 @@
 - [ ] 删除本 `README.md` 顶部的 brain-template 横幅图（那是模板自身的展示图，不属于你的项目）。
 - [ ] 用项目实际信息重写本 `README.md` 顶部的项目简介。
 - [ ] 在 `README.md` 保留一个「如何让 agent 开始 / 项目接手」小节，并把“新 agent 接手已有项目”的提示语改成你的项目语境（新人应可直接复制使用）。
+- [ ] 删除根目录 `LICENSE`；它只用于声明上游 `brain-template` 仓库采用 MIT，不应替下游项目选择整体许可证。
+- [ ] 保留 `.LICENSE.brain-template`；它只覆盖从上游复制或升级而来的模板材料，不自动许可本项目后来加入的内容。
+- [ ] 根据本项目实际情况决定是否创建自己的根目录 `LICENSE`；暂不选择许可证时不要创建。
 - [ ] 检查 [`AGENTS.md`](./AGENTS.md)，按项目需要补充「项目专属约束」。
 - [ ] 保留 `.brain-template.json` 与 `.skills/`，它们是模板协议的一部分；如未来升级模板，按 `.skills/template-upgrader/SKILL.md` 执行。
 - [ ] 保留 `.records/README.md` 与 `.records/CURRENT.md`；前者定义留痕协议，后者是 agent 的当前状态入口。

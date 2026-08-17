@@ -18,6 +18,7 @@
 2. **待用户确认后**，再把以上信息整理成一份项目总览，写入 `Releases/`（建议命名 `00_项目总览.md`）。
 3. 同步把项目专属约束补到本文件下方「项目专属约束」一节。
 4. 按 `.skills/checkpoint-recorder/SKILL.md` 更新 `.records/CURRENT.md`，并为已经确认的初始化结果建立第一条状态基线；不要为确认前的探索对话补造历史。
+5. 完成根目录 `README.md` 的初始化清单，包括改写项目入口、移除模板横幅、处理根目录许可证并保留 `.LICENSE.brain-template`；最后删除该清单。
 
 > 一旦 `Releases/` 有了真实内容，本节判断标志即不成立，后续可忽略本节。
 
@@ -27,10 +28,10 @@
 
 1. 查看根目录是否存在 `.brain-template.json`。
 2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、更新摘要、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
-3. 如不存在，或缺少 `.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
+3. 如不存在，或缺少 `.LICENSE.brain-template`、`.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
 4. 如发现本地协议不完整，先向用户说明；用户明确同意升级后，再读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级。如果该文件也不存在，应从 `brain-template` 权威来源的同一版本快照获取该 skill。
 
-升级模板协议时必须保守：不要删除 `Drafts/`、`.records/events/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容，也不要用模板空白状态覆盖项目已有的 `.records/CURRENT.md`。
+升级模板协议时必须保守：不要删除 `Drafts/`、`.records/events/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容，也不要用模板空白状态覆盖项目已有的 `.records/CURRENT.md`。升级可以补齐或更新 `.LICENSE.brain-template`，但不得新增、删除或覆盖下游项目的根目录 `LICENSE`。
 
 ### 正常任务结束时检查新版本
 
