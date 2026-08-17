@@ -4,7 +4,7 @@
   "template_ref": "main",
   "protocol_version": "2.2.0",
   "protocol_released_at": "2026-08-17",
-  "protocol_summary": "完善模板初始化清理、上游元信息保留和 Windows 点路径隐藏机制",
+  "protocol_summary": "完善模板初始化清理、上游元信息保留和 Windows/WSL 点路径隐藏机制",
   "managed_files": [
     ".LICENSE.brain-template",
     "AGENTS.md",

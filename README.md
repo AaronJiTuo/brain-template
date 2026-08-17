@@ -96,7 +96,9 @@
 - [ ] 把仓库名改为 `<你的项目>-brain`，并设置好仓库描述。
 - [ ] 删除本 `README.md` 顶部的 brain-template 横幅图（那是模板自身的展示图，不属于你的项目）。
 - [ ] 删除模板自带的根目录 `LICENSE`，保留 `.LICENSE.brain-template`；与移除横幅一样直接执行，无需用户参与或选择项目许可证。
-- [ ] 如果当前工作区运行在 Windows：设置当前仓库的 `core.hideDotFiles=true`，再为根目录所有以 `.` 开头的文件和目录补上 Hidden 属性；macOS 与 Linux 跳过。
+- [ ] 按运行环境和仓库实际存储位置处理根级点路径；只改变默认显示方式，不删除任何点文件或点目录。
+
+    **原生 Windows**：设置当前仓库的 `core.hideDotFiles=true`，再为根目录所有以 `.` 开头的文件和目录补上 Hidden 属性。
 
     ```powershell
     git config --local core.hideDotFiles true
@@ -104,6 +106,19 @@
       Where-Object { $_.Name.StartsWith('.') } |
       ForEach-Object { attrib.exe +H "$($_.FullName)" }
     ```
+
+    **WSL**：先执行 `wslpath -w "$(git rev-parse --show-toplevel)"` 判断仓库存储位置。结果以盘符开头（如 `C:\`）说明仓库位于 Windows 挂载盘，执行下面的混合处理；结果以 `\\wsl` 开头说明仓库位于 WSL 原生 Linux 文件系统，直接跳过。其他结果无法可靠判断时不要静默完成初始化。
+
+    ```bash
+    repo_root="$(git rev-parse --show-toplevel)"
+    git -C "$repo_root" config --local core.hideDotFiles true
+    find "$repo_root" -mindepth 1 -maxdepth 1 -name '.*' -print0 |
+      while IFS= read -r -d '' item; do
+        attrib.exe +H "$(wslpath -w "$item")" || exit 1
+      done
+    ```
+
+    如果 WSL 无法调用 `attrib.exe`，说明 Windows interop 不可用；改到 Windows PowerShell 或 CMD 中完成 Hidden 属性设置后再勾选。macOS、原生 Linux 和使用原生 Linux 文件系统的 WSL 跳过本步骤。
 
 - [ ] 用项目实际信息重写本 `README.md` 顶部的项目简介。
 - [ ] 在 `README.md` 保留一个「如何让 agent 开始 / 项目接手」小节，并把“新 agent 接手已有项目”的提示语改成你的项目语境（新人应可直接复制使用）。

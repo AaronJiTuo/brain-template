@@ -26,7 +26,7 @@
 - 不覆盖 `AGENTS.md` 的「项目专属约束」。
 - 不覆盖项目已经改写过的 root `README.md` 项目介绍。
 - 可以补齐或更新 `.LICENSE.brain-template`，但不新增、删除或覆盖下游项目自己的 root `LICENSE`。
-- Windows 上只允许为当前仓库设置 `core.hideDotFiles=true` 并维护根级点路径的 Hidden 属性；不得修改用户的全局 Git 配置。
+- 原生 Windows 以及 WSL 中位于 Windows 挂载盘的仓库，只允许为当前仓库设置 `core.hideDotFiles=true` 并维护根级点路径的 Hidden 属性；不得修改用户的全局 Git 配置。使用 WSL 时必须按仓库实际存储位置分流，不能仅因 shell 是 Linux 就跳过。
 - 只补齐或更新模板协议相关文件和说明。
 
 发现新版不等于获得升级授权。正常任务结束时的版本检查只负责读取远端 manifest、比较版本并在确有新版时提醒；只有用户明确同意后，才能执行本 skill。用户忽略或未明确同意时，什么也不做。
@@ -36,7 +36,8 @@
 1. 读取当前结构。
    - 查看 `AGENTS.md`、`README.md`、`Releases/README.md`、`Drafts/README.md`、`.records/README.md`、`.records/CURRENT.md`、`Archive/README.md`。
    - 查看是否存在 `.brain-template.json`、`.LICENSE.brain-template`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md`；只识别 root `LICENSE` 是否存在，不读取或改写其许可选择。
-   - 如果运行在 Windows，读取当前仓库的 `core.hideDotFiles`，并检查根目录现有点路径是否带 Hidden 属性；只读取当前仓库配置，不读取或修改全局配置。
+   - 如果运行在原生 Windows，读取当前仓库的 `core.hideDotFiles`，并检查根目录现有点路径是否带 Hidden 属性；只读取当前仓库配置，不读取或修改全局配置。
+   - 如果运行在 WSL，先用 `wslpath -w` 转换仓库根目录：结果以盘符开头（如 `C:\`）表示仓库位于 Windows 挂载盘，需要读取仓库级配置和 Windows Hidden 属性；结果以 `\\wsl` 开头表示仓库位于 WSL 原生 Linux 文件系统，按 Linux 处理；其他结果视为无法可靠判断，不得静默跳过。
    - 查看 git 状态，避免覆盖用户正在编辑的改动。
 
 2. 固定权威版本快照。
@@ -77,16 +78,32 @@
 
    许可文件是例外边界：`.LICENSE.brain-template` 是上游模板材料的 MIT 声明，可以按权威快照同步；root `LICENSE` 属于下游项目自身选择，升级流程不得从模板仓库复制、替换或删除它。
 
-6. 执行 Windows 隐藏属性后处理。
-   - 仅在当前工作区运行于 Windows 时执行；macOS 与 Linux 跳过。
-   - 如果当前目录是 Git 工作区，执行 `git config --local core.hideDotFiles true`。这是仅影响当前工作区显示方式的窄范围例外；不得使用 `--global` 或 `--system`，也不得据此执行任何其他 Git 写操作。
-   - 所有协议文件和说明更新完成后，重新枚举仓库根目录中所有以 `.` 开头的文件与目录并设置 Hidden 属性。`core.hideDotFiles=true` 只兜底由 Git 新创建的点路径，本步骤负责 agent、脚本或升级器直接创建以及属性丢失的路径：
+6. 执行 Windows 存储上的隐藏属性后处理。
+   - 原生 Windows 直接执行本步骤。
+   - WSL 必须先确定仓库实际存储位置。使用 `wslpath -w "$(git rev-parse --show-toplevel)"`：盘符路径按 Windows 存储执行本步骤；`\\wsl` 路径属于 WSL 原生 Linux 文件系统，跳过；其他结果无法可靠判断时停止本后处理并向用户说明。
+   - macOS、原生 Linux 和使用原生 Linux 文件系统的 WSL 跳过。
+   - 如果当前目录是 Git 工作区，执行 `git config --local core.hideDotFiles true`。这是仅影响当前工作区显示方式的窄范围例外；不得使用 `--global` 或 `--system`，也不得据此执行任何其他 Git 写操作。WSL 中的 Linux Git 不会据此设置 Windows Hidden 属性，但保留该仓库级配置可供以后操作同一工作区的 Git for Windows 使用。
+   - 所有协议文件和说明更新完成后，重新枚举仓库根目录中所有以 `.` 开头的文件与目录并设置 Hidden 属性。`core.hideDotFiles=true` 只兜底 Git for Windows 新创建的点路径，本步骤负责 agent、脚本、升级器或 WSL Git 直接创建以及属性丢失的路径。
+   - 原生 Windows 使用 PowerShell：
 
      ```powershell
      Get-ChildItem -Force -LiteralPath . |
        Where-Object { $_.Name.StartsWith('.') } |
        ForEach-Object { attrib.exe +H "$($_.FullName)" }
      ```
+
+   - WSL/Windows 盘使用 Bash，并通过 `wslpath` 把每个路径转换后调用 Windows `attrib.exe`：
+
+     ```bash
+     repo_root="$(git rev-parse --show-toplevel)"
+     git -C "$repo_root" config --local core.hideDotFiles true
+     find "$repo_root" -mindepth 1 -maxdepth 1 -name '.*' -print0 |
+       while IFS= read -r -d '' item; do
+         attrib.exe +H "$(wslpath -w "$item")" || exit 1
+       done
+     ```
+
+   - WSL 无法调用 `wslpath` 或 `attrib.exe` 时，Windows interop 不可用，隐藏后处理尚未完成；改到 Windows PowerShell 或 CMD 中执行等价处理，不能静默当作成功。
 
 7. 复核。
    - 确认 `AGENTS.md` 没有丢失项目专属约束。
@@ -96,7 +113,7 @@
    - 确认旧项目已有 `.records/CURRENT.md` 和 `.records/events/` 没有被覆盖或删除。
    - 确认 `.LICENSE.brain-template` 已存在，且升级没有新增、删除或改写 root `LICENSE`。
    - 确认 `.brain-template.json` 的 `template_authority`、`template_ref`、`protocol_version`、`protocol_released_at`、`protocol_summary` 和 `managed_files` 与实际文件一致。
-   - 如果运行在 Windows，确认当前仓库 `core.hideDotFiles` 的值为 `true`，并重新读取根级点路径的文件属性；任何一项缺少 Hidden 属性都视为升级未完成。可用以下 PowerShell 验收：
+   - 如果运行在原生 Windows，确认当前仓库 `core.hideDotFiles` 的值为 `true`，并重新读取根级点路径的文件属性；任何一项缺少 Hidden 属性都视为升级未完成。可用以下 PowerShell 验收：
 
      ```powershell
      if ((git config --local --get core.hideDotFiles) -ne 'true') {
@@ -112,6 +129,8 @@
      }
      ```
 
+   - 如果运行在 WSL/Windows 盘，确认仓库级 `core.hideDotFiles` 为 `true`，并用 `attrib.exe "$(wslpath -w "$item")"` 逐一重新读取根级点路径的 Windows 属性；任何一项缺少 `H` 标记、路径转换失败或 Windows 命令不可用，都视为升级未完成。WSL 原生 Linux 文件系统只验证点前缀和文件存在性，不设置 Windows 属性。
+
    - 确认正常任务结束时只有发现更高版本才提醒；无更新、网络失败、无法判断和用户未同意时均不修改、不提示、不阻塞。
    - 用 git diff 检查升级只触及模板协议相关内容。
 
@@ -124,7 +143,7 @@
   "template_ref": "main",
   "protocol_version": "2.2.0",
   "protocol_released_at": "2026-08-17",
-  "protocol_summary": "完善模板初始化清理、上游元信息保留和 Windows 点路径隐藏机制",
+  "protocol_summary": "完善模板初始化清理、上游元信息保留和 Windows/WSL 点路径隐藏机制",
   "managed_files": [
     ".LICENSE.brain-template",
     "AGENTS.md",
@@ -169,6 +188,6 @@
 - 不要改写项目事实，只升级流程协议。
 - 不要为旧项目补造历史 Record。
 - 不要为下游项目引入 root `LICENSE`，也不要删除或覆盖下游项目已有的 root `LICENSE`。
-- 不要使用 `git config --global` 或 `git config --system` 改变用户的点文件隐藏偏好；Windows 隐藏机制只允许设置当前仓库的 `core.hideDotFiles`。
+- 不要使用 `git config --global` 或 `git config --system` 改变用户的点文件隐藏偏好；原生 Windows 与 WSL/Windows 盘的隐藏机制都只允许设置当前仓库的 `core.hideDotFiles`。
 - 不要因为发现新版或用户同意升级，就推断用户授权了 commit、pull、push 或任何关联代码库 Git 写操作。
 - 不要在用户确认前下载并执行远端 upgrader；版本检查阶段只能只读获取远端 manifest。
