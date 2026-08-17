@@ -95,7 +95,7 @@
   "template_ref": "main",
   "protocol_version": "2.2.0",
   "protocol_released_at": "2026-08-17",
-  "protocol_summary": "增加隐藏的上游 MIT 许可声明，避免下游项目被自动识别为 MIT",
+  "protocol_summary": "完善模板初始化清理与上游元信息保留机制",
   "managed_files": [
     ".LICENSE.brain-template",
     "AGENTS.md",
