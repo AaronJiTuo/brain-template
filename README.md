@@ -26,7 +26,7 @@
 ├── README.md          # 项目入口与说明（你正在看的这种文件）
 ├── AGENTS.md          # 给 AI agent 的操作指南（最重要）
 ├── .brain-template.json # 模板协议版本与托管文件清单
-├── .skills/           # 项目内流程技能：留痕、Draft、对话抓取、Release 整理等
+├── .skills/           # 项目内流程技能：初始化、留痕、Draft、Release、升级等
 ├── .records/          # 隐藏留痕层：当前状态入口与重要历史事件
 ├── Releases/          # 规范性事实：定稿的想法、设计、文档
 ├── Drafts/            # 草稿区：根目录作收件箱，多文件主题与程序使用独立目录
@@ -39,7 +39,7 @@
 | **`.records/`** | Agent 留痕与当前状态 | `CURRENT.md` 紧凑状态入口、重要决策与状态变化 | 回答“现在怎样、发生过什么”；按需检索，不全文读取历史 |
 | **`Drafts/`** | 当前工作台 / AI 上下文素材 | 零碎想法、灵感、外部资料、与 AI 的对话记录、半成品梳理、验证程序 | 根目录只作临时收件箱；同主题 3 个文件时归组；程序从第 1 个文件起独立成目录 |
 | **`Archive/`** | 低频历史归档 | 已被吸收的 Draft、被替代的旧 Release、废弃方案、原始材料 | 默认不读，不删；仅用于追溯 |
-| **`.skills/`** | 项目内流程技能 | 检查点留痕、Draft 归组、AI 对话抓取、Release 整理、模板协议升级等流程说明 | 不假设全局安装；由 `AGENTS.md` 按任务显式读取 |
+| **`.skills/`** | 项目内流程技能 | 冷启动初始化、检查点留痕、Draft 归组、AI 对话抓取、Release 整理、协议升级等流程说明 | 不假设全局安装；由 `AGENTS.md` 按任务显式读取 |
 
 ---
 
@@ -80,7 +80,7 @@
 **启动新项目（冷启动）：**
 
 ```
-这是一个刚用 brain-template 创建的新 `*-brain`。请先读 `AGENTS.md`，按其中的「冷启动」流程：先通过对话了解本项目，等我确认后再整理项目总览，并完成 `README.md` 中的初始化清单。
+这是一个刚用 brain-template 创建的新 `*-brain`。请先读 `AGENTS.md`，命中冷启动条件后完整读取 `.skills/brain-initializer/SKILL.md`；先通过对话了解本项目，等我确认后再执行初始化。
 ```
 
 **新 agent 接手已有项目：**
@@ -91,46 +91,9 @@
 
 ---
 
-## 用本模板创建新项目后（初始化清单）
+## 新项目如何初始化
 
-- [ ] 把仓库名改为 `<你的项目>-brain`，并设置好仓库描述。
-- [ ] 删除本 `README.md` 顶部的 brain-template 横幅图（那是模板自身的展示图，不属于你的项目）。
-- [ ] 删除模板自带的根目录 `LICENSE`，保留 `.LICENSE.brain-template`；与移除横幅一样直接执行，无需用户参与或选择项目许可证。
-- [ ] 按运行环境和仓库实际存储位置处理根级点路径；只改变默认显示方式，不删除任何点文件或点目录。
-
-    **原生 Windows**：设置当前仓库的 `core.hideDotFiles=true`，再为根目录所有以 `.` 开头的文件和目录补上 Hidden 属性。
-
-    ```powershell
-    git config --local core.hideDotFiles true
-    Get-ChildItem -Force -LiteralPath . |
-      Where-Object { $_.Name.StartsWith('.') } |
-      ForEach-Object { attrib.exe +H "$($_.FullName)" }
-    ```
-
-    **WSL**：先执行 `wslpath -w "$(git rev-parse --show-toplevel)"` 判断仓库存储位置。结果以盘符开头（如 `C:\`）说明仓库位于 Windows 挂载盘，执行下面的混合处理；结果以 `\\wsl` 开头说明仓库位于 WSL 原生 Linux 文件系统，直接跳过。其他结果无法可靠判断时不要静默完成初始化。
-
-    ```bash
-    repo_root="$(git rev-parse --show-toplevel)"
-    git -C "$repo_root" config --local core.hideDotFiles true
-    find "$repo_root" -mindepth 1 -maxdepth 1 -name '.*' -print0 |
-      while IFS= read -r -d '' item; do
-        attrib.exe +H "$(wslpath -w "$item")" || exit 1
-      done
-    ```
-
-    如果 WSL 无法调用 `attrib.exe`，说明 Windows interop 不可用；改到 Windows PowerShell 或 CMD 中完成 Hidden 属性设置后再勾选。macOS、原生 Linux 和使用原生 Linux 文件系统的 WSL 跳过本步骤。
-
-- [ ] 用项目实际信息重写本 `README.md` 顶部的项目简介。
-- [ ] 在 `README.md` 保留一个「如何让 agent 开始 / 项目接手」小节，并把“新 agent 接手已有项目”的提示语改成你的项目语境（新人应可直接复制使用）。
-- [ ] 检查 [`AGENTS.md`](./AGENTS.md)，按项目需要补充「项目专属约束」。
-- [ ] 保留 `.brain-template.json` 与 `.skills/`，它们是模板协议的一部分；如未来升级模板，按 `.skills/template-upgrader/SKILL.md` 执行。
-- [ ] 保留 `.records/README.md` 与 `.records/CURRENT.md`；前者定义留痕协议，后者是 agent 的当前状态入口。
-- [ ] 保留 `.skills/checkpoint-recorder/SKILL.md`；它负责结果级留痕、成果保全、按需读取和敏感信息边界。
-- [ ] 保留 `.skills/draft-organizer/SKILL.md`；它负责 Draft 主题归组，并保证程序不会平铺在 `Drafts/` 根目录。
-- [ ] 保留 `Drafts/00_灵感索引.md`，作为长期轻量灵感入口。
-- [ ] 在 `Releases/` 写下第一份核心文档（建议先写一份项目总览，作为 agent 的入口）。
-- [ ] 项目身份确认后，按 `checkpoint-recorder` 建立第一条状态基线并更新 `.records/CURRENT.md`；不要为确认前的对话补造历史。
-- [ ] 删除本清单。
+初始化的完整执行细节位于 [`.skills/brain-initializer/SKILL.md`](./.skills/brain-initializer/SKILL.md)，由 `AGENTS.md` 在命中冷启动条件时按需读取。使用者只需复制上方的“启动新项目”提示语；agent 会先了解项目，等用户确认后再完成项目化、模板清理、状态基线和验收。
 
 ---
 

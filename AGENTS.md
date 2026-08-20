@@ -14,11 +14,9 @@
 
 此时请这样做：
 
-1. **先不要建任何文件。** 通过对话向用户了解清楚：这是个什么项目、目标与非目标、当前阶段、关键约束与红线。
-2. **待用户确认后**，再把以上信息整理成一份项目总览，写入 `Releases/`（建议命名 `00_项目总览.md`）。
-3. 同步把项目专属约束补到本文件下方「项目专属约束」一节。
-4. 按 `.skills/checkpoint-recorder/SKILL.md` 更新 `.records/CURRENT.md`，并为已经确认的初始化结果建立第一条状态基线；不要为确认前的探索对话补造历史。
-5. 完成根目录 `README.md` 的初始化清单，包括改写项目入口和移除模板横幅；最后删除该清单。
+1. 如果当前仓库就是 `github.com/AaronJiTuo/brain-template` 权威模板仓库，占位内容是模板本身，跳过初始化。
+2. 否则必须先完整读取 `.skills/brain-initializer/SKILL.md`，按其状态判定、安全重入、用户确认和验收流程执行。
+3. 用户确认项目身份、目标和边界前，不得创建或改写项目内容。
 
 > 一旦 `Releases/` 有了真实内容，本节判断标志即不成立，后续可忽略本节。
 
@@ -28,7 +26,7 @@
 
 1. 查看根目录是否存在 `.brain-template.json`。
 2. 如存在，确认其中记录的模板权威来源、`template_ref`、`protocol_version`、发布日期、更新摘要、托管文件列表和当前仓库结构是否匹配。模板权威来源应为 GitHub 上的 `AaronJiTuo/brain-template`，`template_ref` 默认使用 `main`。
-3. 如不存在，或缺少 `.LICENSE.brain-template`、`.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
+3. 如不存在，或缺少 `.LICENSE.brain-template`、`.skills/brain-initializer/SKILL.md`、`.skills/checkpoint-recorder/SKILL.md`、`.records/README.md`、`.records/CURRENT.md`、`.skills/draft-organizer/SKILL.md`、`Drafts/00_灵感索引.md`、目录 README 等模板基础设施，说明该项目可能需要升级模板协议。
 4. 如发现本地协议不完整，先向用户说明；用户明确同意升级后，再读取 `.skills/template-upgrader/SKILL.md`，按其中流程执行非破坏性升级。如果该文件也不存在，应从 `brain-template` 权威来源的同一版本快照获取该 skill。
 
 升级模板协议时必须保守：不要删除 `Drafts/`、`.records/events/` 或 `Archive/` 内容，不要改写 `Releases/` 正文，不要覆盖本文件下方「项目专属约束」中的项目内容，也不要用模板空白状态覆盖项目已有的 `.records/CURRENT.md`。升级可以补齐或更新 `.LICENSE.brain-template`，但不得新增、删除或覆盖下游项目的根目录 `LICENSE`。
@@ -52,6 +50,7 @@
 
 当任务语义匹配以下场景时，AI agent 必须显式读取对应的 `SKILL.md`，再执行任务：
 
+- 未初始化或部分初始化的 brain 需要建立项目身份、清理模板痕迹和创建首条状态基线：读取 `.skills/brain-initializer/SKILL.md`。
 - 在 `Drafts/` 中创建、续写、移动或整理文件，或编写验证程序 / 测试原型：读取 `.skills/draft-organizer/SKILL.md`。
 - 从 ChatGPT、Gemini、豆包或其他 AI 对话页面 / 分享链接抓取完整对话，并保存为 Draft：依次读取 `.skills/chat-capture/SKILL.md` 和 `.skills/draft-organizer/SKILL.md`。
 - 工作形成重要决策、实质成果、发现、里程碑或状态变化，需要保存成果、创建 Record 或更新当前状态：读取 `.skills/checkpoint-recorder/SKILL.md`；如需保全对话中独有的成果，再读取 `.skills/draft-organizer/SKILL.md`。
@@ -115,7 +114,7 @@
 - **纯讨论默认不落盘，实质成果必须保全。** 普通探讨、临时举例、尚无结论的方案对比只留在对话中；一旦形成明确决策、可复用成果或重要状态变化，按 `.skills/checkpoint-recorder/SKILL.md` 主动留痕。用户明确说“本次不要记录”“不要落盘”或“只在对话中回答”时，不写 Draft、Record 或 CURRENT。
 - **不要随意创建目录，也不要轻易创建文件。** 本仓库的内容目录只有 `Releases/`、`Drafts/`、`.records/`、`Archive/`；模板协议允许根目录 `.brain-template.json` 与 `.skills/`。`Drafts/` 内可按 `.skills/draft-organizer/SKILL.md` 创建主题目录和程序目录；`.records/events/` 可按 `.skills/checkpoint-recorder/SKILL.md` 创建月份目录；除此之外不要新增目录（如根级 `Assets/`、`Images/`、`tmp/` 等），除非用户明确要求。
   - 原因：你随手留下的目录和文件，会被后来的 agent 误当成「有用的、已确认的内容」，从而造成混乱、误导决策、浪费大量时间。宁可不留，也不要擅自留。
-- **Windows 与 WSL 点路径隐藏。** 不要仅根据 shell 名称判断：原生 Windows 以及 WSL 中位于 Windows 挂载盘的仓库，冷启动都按 README 初始化清单设置本仓库 `core.hideDotFiles=true` 并为现有根级点路径补 Hidden 属性；WSL 先用 `wslpath -w` 转换仓库根目录，盘符路径按 Windows 存储处理，`\\wsl` 路径按原生 Linux 存储跳过。WSL/Windows 盘通过 `wslpath` 调用 `attrib.exe`；无法可靠判断存储位置或 Windows interop 不可用时，不得静默标记完成。模板升级或以后新增、重建根级点路径后，按 `.skills/template-upgrader/SKILL.md` 重跑 Hidden 属性修复。只使用 `--local`，不得修改用户的全局 Git 配置。macOS、原生 Linux 和使用原生 Linux 文件系统的 WSL 依赖点前缀的隐藏语义，不执行该步骤。
+- **Windows 与 WSL 点路径隐藏。** 不要仅根据 shell 名称判断：原生 Windows 以及 WSL 中位于 Windows 挂载盘的仓库，冷启动都按 `.skills/brain-initializer/SKILL.md` 设置本仓库 `core.hideDotFiles=true` 并为现有根级点路径补 Hidden 属性；WSL 先用 `wslpath -w` 转换仓库根目录，盘符路径按 Windows 存储处理，`\\wsl` 路径按原生 Linux 存储跳过。WSL/Windows 盘通过 `wslpath` 调用 `attrib.exe`；无法可靠判断存储位置或 Windows interop 不可用时，不得静默标记完成。模板升级或以后新增、重建根级点路径后，按 `.skills/template-upgrader/SKILL.md` 重跑 Hidden 属性修复。只使用 `--local`，不得修改用户的全局 Git 配置。macOS、原生 Linux 和使用原生 Linux 文件系统的 WSL 依赖点前缀的隐藏语义，不执行该步骤。
 - 这是文档仓库，**默认不要在这里写代码或脚手架**，除非用户明确要求。获准编写的程序只能放进 `Drafts/` 下属于该程序的独立目录，并遵循 `.skills/draft-organizer/SKILL.md`。
 - **不要擅自删除 `Drafts/`、`.records/events/` 或 `Archive/` 的内容**；它们是上下文与历史。历史 Record 通过新增更正记录纠错，不回写或删除。
 - 修改 `Releases/` 中的定稿内容前，确认这是用户的意图，因为其它人和 agent 都以此为准。
