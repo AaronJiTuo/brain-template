@@ -25,6 +25,7 @@
 - 最终 Draft 只保存正式对话消息，不保存 LLM 的思考过程；思考过程对后期阅读和项目沉淀无用。
 - 平台展示的搜索过程、工具调用过程、调试日志等非正式消息默认不写入 Draft，除非用户明确要求保留。
 - 如果无法证明完整，应在 Draft 中明确标记 `capture_status: partial` 或 `capture_status: uncertain`，不要假装完整。
+- 采集页面地址在持久化前必须脱敏；Cookie、token、签名参数、认证信息和登录态私有 URL 不得写入 Draft。
 
 ## 推荐工具
 
@@ -35,7 +36,8 @@
 ## 采集流程
 
 1. 确认输入。
-   - 记录用户提供的 URL、平台、期望主题名。
+   - URL 只在本次采集过程中临时使用；落盘时必须按第 2 步生成脱敏后的来源字段，不直接复制浏览器地址栏或用户提供的完整 URL。
+   - 记录平台和期望主题名。
    - 如果用户未提供主题名，从页面标题、首条用户消息或对话主题中提炼一个简短文件名。
    - 文件名格式为 `YYYY-MM-DD_对话主题.md`，不要在文件名中加入平台名。
    - 按 `.skills/draft-organizer/SKILL.md` 选择路径：已有匹配主题目录时保存到该目录；加入后同主题达到 3 个文件时创建主题目录并归组；否则可暂存于 `Drafts/` 根目录。
@@ -43,7 +45,10 @@
 2. 打开页面。
    - 优先打开用户提供的分享链接。
    - 如果分享链接无法访问、内容明显缺失或不是最新内容，改用已登录浏览器里的原始会话页面。
-   - 记录实际采集 URL；如果分享链接和登录态原始页面都使用过，在 frontmatter 中都写明。
+   - 持久化来源前移除 URL 中的用户名、密码、query 和 fragment；包含 token、签名、临时访问凭据或其他无法可靠脱敏信息时，不保留该 URL。
+   - 只有确认是可公开、稳定访问的分享链接时，才写入脱敏后的 `source_url`。登录态原始页面、私有会话页或无法安全持久化的地址使用 `source_url: omitted`，并写 `source_access: authenticated_private_page`。
+   - 如果安全分享链接和登录态原始页面都使用过，只保存安全分享链接；在“采集说明”中说明曾使用登录态页面补采，不保存其地址。
+   - 不读取、记录或导出 Cookie、Authorization header、local storage token 或其他会话凭据。
 
 3. 识别滚动容器和消息节点。
    - 不同平台只应在选择器、说话人识别、加载触发方式上做适配。
@@ -86,6 +91,7 @@
    - 确认文档只有一个 `#` 顶级标题。
    - 确认每条消息前都有 `<div data-speaker="..." style="...">` marker，且角色颜色、图标和标签符合本 skill 的映射。
    - 确认 frontmatter 中有采集状态和完整性说明。
+   - 确认 frontmatter 位于文件第一行，且 `source_url` 不含用户信息、query、fragment、token、签名参数或登录态私有地址；无法安全保留时必须为 `omitted`。
    - 确认最终 Draft 中没有 LLM 思考过程、搜索过程、工具调用过程或调试日志。
 
 ## Markdown 输出格式
@@ -93,10 +99,9 @@
 Draft 文件必须使用以下结构：
 
 ```md
-# 对话主题
-
 ---
-source_url: https://chatgpt.com/share/...
+source_url: "https://chatgpt.com/share/..."
+source_access: public_share
 source_platform: chatgpt
 captured_at: 2026-07-12
 capture_status: complete
@@ -105,6 +110,8 @@ scroll_rounds: 18
 removed_nonfinal_count: 3
 capture_method: playwright
 ---
+
+# 对话主题
 
 ## 采集说明
 
@@ -125,8 +132,10 @@ capture_method: playwright
 
 规则：
 
-- 顶部只允许一个 `# 对话主题`。
-- frontmatter 分隔线使用 `---`。
+- frontmatter 必须从文件第一行开始，结束后空一行再写 `# 对话主题`；分隔线使用 `---`。
+- 文档只允许一个 `# 对话主题` 顶级标题。
+- `source_access` 使用 `public_share` 或 `authenticated_private_page`；后者必须配合 `source_url: omitted`。
+- `source_url` 不得包含 userinfo、query、fragment、token、签名参数或登录态私有地址；没有可安全持久化的公开地址时使用 `omitted`。
 - 说话人 marker 使用英文半角双引号。
 - marker 必须保持为一行 HTML，独立成行；后面空一行，再写消息正文。
 - 用户 marker 固定使用蓝色 `#0969da` 和 `👤`，assistant marker 固定使用绿色 `#1f883d` 和 `🤖`，不要按平台随意换色。
@@ -205,4 +214,5 @@ capture_method: playwright
 - 不要改写消息正文中的标题层级。
 - 不要默认生成额外 `.html` 或 `.json` 文件。
 - 不要把不完整采集标记为 `complete`。
+- 不要保存 Cookie、token、签名参数、认证 header、浏览器存储凭据或未脱敏的登录态 URL。
 - 不要删除或覆盖已有 Draft。只有在 `.skills/draft-organizer/SKILL.md` 的归组规则明确触发时，才可移动本次主题关系明确的 Draft，并必须修复路径引用。

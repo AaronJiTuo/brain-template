@@ -12,6 +12,8 @@
 
 用户无需额外提醒“记录灵感并归档 Drafts”；这是本流程的一部分。
 
+本流程必然会创建或修改 Draft 状态、灵感索引，或移动 Draft/程序目录，因此开始执行前必须完整读取 `.skills/draft-organizer/SKILL.md`；所有路径选择、归组和移动继续遵守该 skill。
+
 ## 输入边界
 
 只处理本次相关 Draft 和 Record：
@@ -67,12 +69,17 @@
 5. 处理 Draft 去留。
    - 完全吸收：移动到 `Archive/`。
    - 完全吸收一个程序时，保持程序目录完整，不要把其中源码重新平铺。
-   - 部分吸收：留在 `Drafts/`，在文件顶部补 frontmatter。
+   - 部分吸收：留在 `Drafts/`，在文件顶部补充或合并 frontmatter 状态字段。
    - 仍在推进：留在 `Drafts/`，必要时标 `active`。
    - 明显过期但仍需留痕：移动到 `Archive/`。
    - 不删除 Draft。
+   - 每次移动前先解析确切目标路径并检查冲突；目标文件或目录已存在时不得覆盖、合并或删除，优先选择含日期或主题的可搜索新名称，仍无法无歧义处理时停止并向用户说明。
 
 6. 给仍留在 `Drafts/` 的已审阅文件补状态。
+
+   - 如果文件第一行已经是 YAML frontmatter，将 `status`、`absorbed_by`、`remaining_value` 和 `last_reviewed` 合并进同一个 mapping；保留 chat-capture 等流程写入的来源、采集状态和其他未知字段，不创建第二个 frontmatter，也不改变正文。
+   - 如果文件尚无 frontmatter，才在第一行创建下面的单个状态块。
+   - 无法可靠解析已有 frontmatter、字段类型冲突或合并结果无效时停止并向用户说明，不覆盖原块。
 
    ```yaml
    ---
@@ -98,6 +105,8 @@
    - `Drafts/` 中不应继续堆放已完全吸收的原始材料。
    - `Archive/` 中的文件不应被日常执行默认读取。
    - 文件移动后，Release 和灵感索引中的路径要准确。
+   - Archive 中不存在因本次移动被覆盖、隐式合并或丢失的同名内容。
+   - 部分吸收的 Draft 最终只有一个位于第一行的有效 YAML frontmatter；已有元数据均被保留，文档仍只有一个顶级标题。
    - 部分吸收后仍留在 `Drafts/` 的文件继续符合 `.skills/draft-organizer/SKILL.md`，程序文件不得回到根目录。
    - 被引用的 Record 路径准确，且历史 Record 没有被移动、删除或回写。
 
@@ -119,3 +128,5 @@
 - 不要为了补状态而改写用户草稿正文。
 - 不要处理与本次 Release 无关的 Draft。
 - 不要为了生成 Release 全量扫描 `.records/events/`。
+- 不要让移动操作覆盖或隐式合并 Archive 中的同名文件或目录。
+- 不要在已有 YAML frontmatter 前再插入第二个 frontmatter，也不要为写入状态而覆盖已有采集或来源元数据。

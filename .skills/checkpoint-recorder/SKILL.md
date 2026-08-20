@@ -173,7 +173,7 @@ supersedes: null
 
 - 历史事件原则上不可变。发现旧记录错误时，新增一条更正 Record，并用 `supersedes` 指向旧记录。
 - `CURRENT.md` 反映最新有效状态，不需要保留已经被更正的错误描述。
-- Release 说明“应该是什么”，最新有效 Record 说明“实际上是什么”。两者冲突时记录漂移，不静默修改 Release。
+- Release 说明“应该是什么”，`.records/CURRENT.md` 说明“现在怎样”，`.records/events/` 保存“发生过什么”。Release 与 CURRENT 冲突时记录漂移，并用相关 Record 保存变化证据，不静默修改任何一方。
 - 从 Record 更新 Release 时执行 `.skills/release-organizer/SKILL.md`。Record 即使已被 Release 吸收也继续保留，不移动、不删除。
 
 ## 安全与容量边界

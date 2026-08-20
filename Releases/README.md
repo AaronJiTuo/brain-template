@@ -5,7 +5,7 @@
 - **人类只看这一个目录就够了。**
 - **AI agent 建立上下文时应优先、并默认信任这里的内容。**
 
-项目“实际上进行到哪里”由 `.records/CURRENT.md` 表达，历史变化与证据位于 `.records/events/`。Release 与最新有效 Record 不一致时，应标记文档与现实漂移，而不是静默覆盖任何一方。
+项目“实际上进行到哪里”由 `.records/CURRENT.md` 表达，历史变化与证据位于 `.records/events/`。Release 与 CURRENT 不一致时，应标记文档与现实漂移，并用相关 Record 保存变化证据，而不是静默覆盖任何一方。
 
 ## 放什么
 

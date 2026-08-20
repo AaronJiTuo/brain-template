@@ -11,7 +11,7 @@
 - README 仍是 `brain-template` 介绍或仍带模板横幅；
 - 已有项目总览、README、专属约束、CURRENT 或初始 Record 中的一部分，但没有闭环。
 
-`github.com/AaronJiTuo/brain-template` 权威模板仓库自身是明确例外：它必须保持可复制的模板状态，不执行本 skill。
+`github.com/AaronJiTuo/brain-template` 权威模板仓库自身是明确例外：它必须保持可复制的模板状态，不执行本 skill。必须通过当前仓库的 Git 远端或用户提供的明确仓库上下文验证这一身份；manifest 中声明上游权威来源，不能证明当前仓库本身就是权威模板。
 
 ## 核心原则
 
@@ -32,19 +32,19 @@
 
 ### 部分初始化
 
-已有一部分真实项目内容，但以下任一项尚未闭环时，视为部分初始化：
+先检查本节，再判断是否已初始化。已有一部分真实项目内容，但以下任一项尚未闭环时，始终视为部分初始化：
 
 - 项目总览或等价核心 Release；
 - AGENTS 项目专属约束；
 - README 项目入口和可复制的 agent 接手语；
-- 模板横幅、模板 root `LICENSE` 或平台点路径后处理；
+- 模板横幅、模板 root `LICENSE`、`Drafts/private/` 的 Git 隐私保护或平台点路径后处理；
 - 首条结果级 Record 和 `.records/CURRENT.md` 状态基线。
 
 先列出已完成与缺失项，让用户确认恢复范围。只补缺失项，不把模板占位内容覆盖到已有项目事实上。
 
 ### 已初始化
 
-已有真实项目 Release 和项目专属约束时，默认认为已初始化。不重跑本 skill，转入 AGENTS 的正常接手流程。如用户明确指出初始化遗留项，按部分初始化处理。
+只有已有真实项目 Release 和项目专属约束，且“部分初始化”列出的所有必需产物与后处理均已闭环时，才视为已初始化。不重跑本 skill，转入 AGENTS 的正常接手流程。不能仅凭 Release 和项目专属约束两项忽略其他缺口；如用户明确指出初始化遗留项，按部分初始化处理。
 
 信号冲突或无法可靠判定时，不猜测，不写入；向用户简要说明现状和待确认范围。
 
@@ -55,7 +55,7 @@
 - 查看 Git 分支和工作区，识别用户或其他 agent 的并行修改。
 - 读取 README、AGENTS、`Releases/`、`.records/CURRENT.md` 和 manifest；只按需读取 CURRENT 指向的少量 Record。
 - 只检查 root `LICENSE` 是否存在以及是否显然仍为模板文件；部分初始化时如无法区分它是模板文件还是项目自有许可证，不删除，先向用户说明。
-- 确认当前仓库不是 `github.com/AaronJiTuo/brain-template` 权威模板仓库。
+- 验证当前仓库身份：优先读取并规范化 Git 远端，只有 HTTPS、SSH 等形式明确指向 `github.com/AaronJiTuo/brain-template`，或用户提供了同等明确的仓库上下文时，才可认定为权威模板仓库。fork、下游仓库或仅在 manifest 中写有相同 `template_authority` 都不构成身份确认；无法可靠判断时停止写入并向用户说明。
 
 ### 2. 通过对话发现项目
 
@@ -124,6 +124,7 @@
 - 在明确的未初始化状态中，删除模板自带的 root `LICENSE`，保留 `.LICENSE.brain-template`；不询问用户选择项目许可证，也不新建 root `LICENSE`。
 - 部分初始化中如无法可靠确认 root `LICENSE` 仍是模板文件，不删除，将它列为需要用户判定的遗留项。
 - 保留 `.brain-template.json`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md` 和各目录 README；它们是协议基础设施。
+- 确认 `.gitignore` 实际忽略 `Drafts/private/`：先用 `git ls-files -- 'Drafts/private/**'` 检查是否已有被跟踪内容，再检查目录中每个实际文件与哨兵路径的 ignore 结果。发现已跟踪文件时停止并向用户说明，不自动删除、移动或执行 `git rm --cached`；规则缺失时只在末尾追加 `Drafts/private/`，不覆盖项目已有忽略规则，追加后重复全部检查。
 
 ### 8. 执行平台后处理
 
@@ -186,6 +187,7 @@ Star 失败不回滚、不否定已成功的初始化，但必须如实告知用
 - AGENTS 的项目专属约束已由占位内容改为已确认约束；
 - 模板 root `LICENSE` 已按安全边界处理，`.LICENSE.brain-template` 仍存在；
 - `.brain-template.json`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md` 和目录 README 仍完整；
+- `.gitignore` 已实际忽略 `Drafts/private/`，目录中没有被 Git 跟踪或被反向规则放行的内容，且项目原有忽略规则未被覆盖；
 - `.records/CURRENT.md` 和首条 Record 反映实际结果；
 - 原生 Windows 或 WSL/Windows 盘的隐藏后处理已复核；不具备平台条件时明确列出未验证边界；
 - Git 差异只包含用户确认的初始化范围，没有覆盖并行修改；
