@@ -72,6 +72,7 @@
    - `.LICENSE.brain-template`
    - `.gitignore`
    - `.brain-template.json`
+   - `.skills/brain-handoff/SKILL.md`
    - `.skills/brain-initializer/SKILL.md`
    - `.skills/chat-capture/SKILL.md`
    - `.skills/checkpoint-recorder/SKILL.md`
@@ -89,7 +90,7 @@
    - 再用 `git check-ignore --quiet --no-index Drafts/private/.brain-template-private-check` 检查哨兵路径，并对 `Drafts/private/` 中每个实际文件逐一检查 ignore 结果，防止反向规则只放行真实文件。未完全忽略时，创建或只在文件末尾追加 `Drafts/private/`；不得覆盖、重排或删除项目已有规则。追加后重复索引、哨兵和实际文件三项检查，仍未闭环则停止。
 
 6. 更新说明文件。
-   - `AGENTS.md` 维护初始化状态路由、按层读取、项目内 skill 路由、长期安全边界和模板协议维护规则；skill 的详细执行步骤只保留在对应 `SKILL.md` 中。同步时保留下方「项目专属约束」及其项目内容。
+   - `AGENTS.md` 维护初始化状态路由、按层读取、正式接手与其他项目内 skill 路由、长期安全边界和模板协议维护规则；skill 的详细执行步骤只保留在对应 `SKILL.md` 中。同步时保留下方「项目专属约束」及其项目内容。
    - `Drafts/README.md` 增加成果保全授权、无状态 Draft、主题归组、程序目录、AI 对话抓取、灵感索引和 Release 后处理说明。
    - `Releases/README.md` 增加规范性事实、当前状态、来源与证据关系说明。
    - `.records/README.md` 增加 Record 与 CURRENT 的职责、读取边界、不可变历史和 Git 边界。
@@ -128,6 +129,7 @@
 8. 复核。
    - 确认 `AGENTS.md` 没有丢失项目专属约束。
    - 确认没有删除历史内容。
+   - 确认 `.skills/brain-handoff/SKILL.md` 已存在，AGENTS 能在用户明确要求正式接手时路由到它；普通具体任务不因例行上下文汇报而等待重复确认。
    - 确认 `.skills/brain-initializer/SKILL.md` 已存在，AGENTS 能在未初始化、部分初始化和信号冲突时路由到它，且升级本身没有触发初始化。
    - 确认 `.skills/draft-organizer/SKILL.md` 已存在，AGENTS 能在 Draft 写入与程序原型任务中路由到它，skill 明确禁止程序平铺在 `Drafts/` 根目录。
    - 确认 `.skills/checkpoint-recorder/SKILL.md` 已存在，自动保全、关闭留痕、按需读取、敏感信息、不可变历史和禁止自动 Git 的边界完整。
@@ -209,7 +211,7 @@
   "update_channel": "stable",
   "protocol_version": "2.3.2",
   "protocol_released_at": "2026-08-23",
-  "protocol_summary": "取消升级二次确认，将初始化与升级的可选 Star 询问后置",
+  "protocol_summary": "取消重复确认，将初始化与升级的可选 Star 询问后置，并将正式接手流程 Skill 化",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",
@@ -222,6 +224,7 @@
     ".records/README.md",
     ".records/CURRENT.md",
     ".brain-template.json",
+    ".skills/brain-handoff/SKILL.md",
     ".skills/brain-initializer/SKILL.md",
     ".skills/chat-capture/SKILL.md",
     ".skills/checkpoint-recorder/SKILL.md",

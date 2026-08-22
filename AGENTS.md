@@ -18,7 +18,7 @@
    - 下方「项目专属约束」仍是占位模板；
    - root `README.md` 仍是模板介绍或仍带模板横幅；
    - 项目总览、README、专属约束、CURRENT 或首条 Record 只有部分完成、彼此不一致。
-3. **已初始化**：只有在已有真实项目 Release 和项目专属约束，且上一步列出的项目总览、README、模板清理、CURRENT 与首条 Record 等必需产物均已闭环时，才进入下方正常接手流程；不能仅凭 Release 和专属约束两项就跳过其余缺口。
+3. **已初始化**：只有在已有真实项目 Release 和项目专属约束，且上一步列出的项目总览、README、模板清理、CURRENT 与首条 Record 等必需产物均已闭环时，才进入下方普通任务或正式接手路由；不能仅凭 Release 和专属约束两项就跳过其余缺口。
 4. **无法可靠判断**：不要猜测或写入。读取 initializer 后，向用户简要说明现状和待确认范围。
 
 初始化或恢复初始化时，用户确认项目身份、目标和边界前，不得创建或改写项目内容。
@@ -32,6 +32,7 @@
 | 任务场景 | 必须读取 |
 | --- | --- |
 | 判断或恢复未初始化、部分初始化的 brain | `.skills/brain-initializer/SKILL.md` |
+| 用户明确要求接手、先了解项目、汇报当前状态或形成正式交接 | `.skills/brain-handoff/SKILL.md` |
 | 在 `Drafts/` 创建、续写、移动或整理文件，或编写验证程序 / 测试原型 | `.skills/draft-organizer/SKILL.md` |
 | 抓取 AI 对话页面或分享链接并保存为 Draft | `.skills/chat-capture/SKILL.md`，再读 `.skills/draft-organizer/SKILL.md` |
 | 保存重要决策、实质成果、发现、里程碑或状态变化 | `.skills/checkpoint-recorder/SKILL.md`；需要保全对话成果时再读 `draft-organizer` |
@@ -54,7 +55,7 @@
 
 > 一句话：**`Releases/` 说明“应该是什么”，`.records/CURRENT.md` 说明“现在怎样”，`.records/events/` 保存“发生过什么”；三者不一致时标记漂移，不静默覆盖。`Drafts/` 只作参考，`Archive/` 只作历史。**
 
-> 接手已有项目时，先完成阅读与理解对齐：复述你对项目和当前状态的理解，等待用户确认后再执行具体任务；确认前不要修改仓库内容。
+> 普通具体任务按上述顺序建立足够上下文后继续执行，不把例行理解汇报变成新的确认门槛。用户明确要求接手、先了解项目、汇报当前状态或形成正式交接时，读取并执行 `.skills/brain-handoff/SKILL.md`；是否暂停由该 skill 的确认语义决定。
 
 ## 始终遵守的工作原则
 

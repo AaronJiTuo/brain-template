@@ -5,7 +5,7 @@
   "update_channel": "stable",
   "protocol_version": "2.3.2",
   "protocol_released_at": "2026-08-23",
-  "protocol_summary": "取消升级二次确认，将初始化与升级的可选 Star 询问后置",
+  "protocol_summary": "取消重复确认，将初始化与升级的可选 Star 询问后置，并将正式接手流程 Skill 化",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",
@@ -18,6 +18,7 @@
     ".records/README.md",
     ".records/CURRENT.md",
     ".brain-template.json",
+    ".skills/brain-handoff/SKILL.md",
     ".skills/brain-initializer/SKILL.md",
     ".skills/chat-capture/SKILL.md",
     ".skills/checkpoint-recorder/SKILL.md",

@@ -25,7 +25,7 @@
 ### 让新 agent 接手已有 brain
 
 ```text
-请先读 AGENTS.md，并按其中的接手顺序阅读 Releases/ 的核心入口和 .records/CURRENT.md。先复述你对项目和当前状态的理解，等我确认后再执行具体任务。
+请先读 AGENTS.md，并按 .skills/brain-handoff/SKILL.md 接手当前项目。如果我同时给出了具体任务且不存在会实质改变执行结果的歧义，请在简要报告理解后直接继续，不要等待重复确认。
 ```
 
 即使使用的工具会自动读取 `AGENTS.md`，显式要求 agent 先读它，仍能让不同工具从同一套规则开始工作。
@@ -47,7 +47,7 @@
 - 平时可以直接和 agent 探索、设计和推进工作，不需要先学会维护整套目录。
 - 尚未定稿但值得保留的材料进入 `Drafts/`；成熟到读者无需追问也能照做的内容进入 `Releases/`。
 - 重要决策和实际状态由 agent 记录到 `.records/`，让项目规范与现实进度都不会在交接时丢失。
-- 新 agent 接手时先读 `Releases/` 和 `.records/CURRENT.md`，再按需追溯少量历史，避免从头重建上下文。
+- 新 agent 正式接手时按 `brain-handoff` 读取 `Releases/` 和 `.records/CURRENT.md`，再按需追溯少量历史；普通具体任务只建立足够上下文，不额外制造确认等待。
 
 ---
 
