@@ -95,7 +95,7 @@
    - `Releases/README.md` 增加规范性事实、当前状态、来源与证据关系说明。
    - `.records/README.md` 增加 Record 与 CURRENT 的职责、读取边界、不可变历史和 Git 边界。
    - `Archive/README.md` 增加已吸收 Draft 可归档、默认不读 Archive 的说明。
-   - `README.md` 只确保真实项目介绍和可复制的最短 agent 启动 / 接手入口仍存在；不要为了同步协议向已项目化 README 追加目录树、内部文件清单或完整升级流程，也不把模板 README 整篇覆盖到下游 README。
+   - `README.md` 保留真实项目介绍，并确保可复制的最短 agent 启动 / 接手入口仍存在。正式接手语必须路由到 `.skills/brain-handoff/SKILL.md`；如果旧接手语要求 agent 对所有具体任务都先复述并等待确认，只局部替换这段提示，使没有实质歧义的已授权任务在简要报告理解后直接继续。不要为了同步协议追加目录树、内部文件清单或完整升级流程，也不把模板 README 整篇覆盖到下游 README。
 
    许可文件是例外边界：`.LICENSE.brain-template` 是上游模板材料的 MIT 声明，可以按权威快照同步；root `LICENSE` 属于下游项目自身选择，升级流程不得从模板仓库复制、替换或删除它。
 
@@ -130,6 +130,7 @@
    - 确认 `AGENTS.md` 没有丢失项目专属约束。
    - 确认没有删除历史内容。
    - 确认 `.skills/brain-handoff/SKILL.md` 已存在，AGENTS 能在用户明确要求正式接手时路由到它；普通具体任务不因例行上下文汇报而等待重复确认。
+   - 确认 root `README.md` 的可复制正式接手语也能路由到 `.skills/brain-handoff/SKILL.md`，且已移除“所有具体任务都必须复述后等待确认”的旧提示；真实项目介绍和其他 README 内容仍被保留。
    - 确认 `.skills/brain-initializer/SKILL.md` 已存在，AGENTS 能在未初始化、部分初始化和信号冲突时路由到它，且升级本身没有触发初始化。
    - 确认 `.skills/draft-organizer/SKILL.md` 已存在，AGENTS 能在 Draft 写入与程序原型任务中路由到它，skill 明确禁止程序平铺在 `Drafts/` 根目录。
    - 确认 `.skills/checkpoint-recorder/SKILL.md` 已存在，自动保全、关闭留痕、按需读取、敏感信息、不可变历史和禁止自动 Git 的边界完整。

@@ -36,7 +36,7 @@
 
 - 项目总览或等价核心 Release；
 - AGENTS 项目专属约束；
-- README 项目入口和可复制的 agent 接手语；
+- README 项目入口和可复制的 agent 接手语；接手语必须路由到 `.skills/brain-handoff/SKILL.md`，且不能要求普通具体任务在没有实质歧义时停下来等待确认；
 - 模板横幅、模板 root `LICENSE`、`Drafts/private/` 的 Git 隐私保护或平台点路径后处理；
 - 首条结果级 Record 和 `.records/CURRENT.md` 状态基线。
 
@@ -77,7 +77,7 @@
 1. 项目身份、目标、非目标、阶段与主要读者；
 2. 拟写入项目总览的关键事实；
 3. 拟写入 AGENTS 的项目专属约束；
-4. README 的项目入口和新 agent 接手提示语；
+4. README 的项目入口和新 agent 接手提示语；提示语应路由到 `.skills/brain-handoff/SKILL.md`，并明确普通具体任务在没有实质歧义时不等待重复确认；
 5. 要完成的模板清理、平台后处理和状态基线；
 6. 仍需要用户另行授权的外部动作，例如改名 GitHub 仓库。
 
@@ -92,7 +92,7 @@
 
 - 在 `Releases/` 创建第一份核心项目文档，通常为 `00_项目总览.md`，至少包含项目身份、背景、愿景、目标与非目标、关键约束、事实关系、当前阶段、验证标准和来源。
 - 将已确认的项目专属约束写入 AGENTS 底部，移除占位示例，但不改写通用协议段。
-- 将 README 改成面向当前项目的入口，保留「如何让 agent 开始 / 项目接手」和可直接复制的接手语。
+- 将 README 改成面向当前项目的入口，保留「如何让 agent 开始 / 项目接手」和可直接复制的接手语。正式接手语必须要求 agent 先读 AGENTS 并执行 `.skills/brain-handoff/SKILL.md`；如果同一请求已经包含明确具体任务，且不存在会实质改变结果的歧义，应在简要报告理解后直接继续，不能要求用户为同一任务再确认一次。
 - 如仓库名或 GitHub 描述仍是模板状态，将它作为初始化交接项；只有用户对外部改名明确授权时才可执行，不把本地文档确认自动扩张为 GitHub 写权限。
 
 ### 6. 清理模板痕迹
@@ -143,7 +143,7 @@ macOS、原生 Linux 和 WSL 原生 Linux 文件系统依赖点前缀隐藏语�
 至少确认：
 
 - `Releases/` 已有真实项目的核心入口；
-- README 已改成真实项目介绍，模板横幅与介绍已移除，仍保留可复制的 agent 接手语；
+- README 已改成真实项目介绍，模板横幅与介绍已移除，仍保留可复制的 agent 接手语；该接手语能路由到 `.skills/brain-handoff/SKILL.md`，且没有为普通具体任务保留普遍的理解确认门槛；
 - AGENTS 的项目专属约束已由占位内容改为已确认约束；
 - 模板 root `LICENSE` 已按安全边界处理，`.LICENSE.brain-template` 仍存在；
 - `.brain-template.json`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md` 和目录 README 仍完整；
