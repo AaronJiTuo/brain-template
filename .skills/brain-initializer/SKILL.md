@@ -81,44 +81,21 @@
 5. 要完成的模板清理、平台后处理和状态基线；
 6. 仍需要用户另行授权的外部动作，例如改名 GitHub 仓库。
 
-### 4. 只读判定是否可邀请 Star
+### 4. 获得项目定义确认
 
-本步骤只判定 `can_offer_star`，不发起任何写操作。只有以下条件全部成立才显示 Star 选项：
+- 展示步骤 3 的待落盘摘要，只围绕项目身份、目标、边界、拟写入内容、模板清理、平台后处理和状态基线请求用户确认初始化。
+- 用户回复“确认”“开始初始化”“按以上内容初始化”或表达完全等价的明确意图后，即获得本次初始化授权；在此之前保持只读。
+- 本步骤不检测、不询问也不执行 Star，不提供“确认并 Star / 仅确认”选项。初始化确认不授权 Star，也不应被无关的 Star 选择阻塞。
+- 如用户已明确表示不要 Star，记住该会话内选择，并在初始化成功后跳过 Star 判定与邀请；不要把选择写入项目文件或 Record。如用户已单独明确授权 Star，也必须等初始化成功并通过实时条件判定后才能执行。
 
-1. 当前环境已安装可执行的 `gh`；
-2. `gh auth status --hostname github.com` 确认已有活动的用户认证，全程不使用 `--show-token`；
-3. `gh api user --jq .login` 能可靠返回当前 GitHub 账号；
-4. 对固定公开仓库执行 `GET /user/starred/AaronJiTuo/brain-template` 时，GitHub 返回 `404`，明确表示当前账号尚未 Star；
-5. 检测全程不需安装、登录、提供新凭据、扩大权限或触发额外用户批准。
-
-`204` 表示已 Star，不邀请。`401`、`403`、不能确认来自固定端点的 `404`、网络失败、超时、响应无效或任何不确定结果都视为 `can_offer_star=false`。此时不安装、不登录、不请求额外授权，不向用户显示 Star 邀请，也不把跳过视为初始化错误。
-
-不将该判定命名为 `can_star`：GitHub 没有无副作用的 Star 写权限预检，最终 PUT 仍可能因权限不足而失败。
-
-### 5. 获得最终确认
-
-如果 `can_offer_star=false`，只展示待落盘内容并请求用户确认初始化，不提及 Star。
-
-如果 `can_offer_star=true`，在同一个最终确认中使用以下基准文案：
-
-> 以上是我准备据此完成初始化的内容。还有一个完全可选的小请求：如果你认同 `brain-template` 让项目知识持续沉淀、让后来的人或 AI agent 能够可靠接手的方式，也欢迎用一个 Star 支持它继续维护。不 Star 完全没关系，不会影响初始化结果或后续使用。
->
-> 请回复：
-> - `确认并 Star`：按以上内容完成初始化，并使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star。
-> - `仅确认`：只按以上内容完成初始化，不执行 Star。
-
-只有 `确认并 Star` 或完全等价的明确语义授权 Star。`仅确认`、普通 `确认`、含糊回复或“请初始化，但不要 Star”等排除语义都只授权初始化。如用户在本次请求中已明确拒绝 Star，不再显示 Star 邀请。
-
-在获得有效初始化确认前保持只读。
-
-### 6. 项目化落盘
+### 5. 项目化落盘
 
 - 在 `Releases/` 创建第一份核心项目文档，通常为 `00_项目总览.md`，至少包含项目身份、背景、愿景、目标与非目标、关键约束、事实关系、当前阶段、验证标准和来源。
 - 将已确认的项目专属约束写入 AGENTS 底部，移除占位示例，但不改写通用协议段。
 - 将 README 改成面向当前项目的入口，保留「如何让 agent 开始 / 项目接手」和可直接复制的接手语。
 - 如仓库名或 GitHub 描述仍是模板状态，将它作为初始化交接项；只有用户对外部改名明确授权时才可执行，不把本地文档确认自动扩张为 GitHub 写权限。
 
-### 7. 清理模板痕迹
+### 6. 清理模板痕迹
 
 - 移除 README 顶部的 `brain-template` 横幅和模板自身介绍。
 - 在明确的未初始化状态中，删除模板自带的 root `LICENSE`，保留 `.LICENSE.brain-template`；不询问用户选择项目许可证，也不新建 root `LICENSE`。
@@ -126,7 +103,7 @@
 - 保留 `.brain-template.json`、`.skills/`、`.records/`、`Drafts/00_灵感索引.md` 和各目录 README；它们是协议基础设施。
 - 确认 `.gitignore` 实际忽略 `Drafts/private/`：先用 `git ls-files -- 'Drafts/private/**'` 检查是否已有被跟踪内容，再检查目录中每个实际文件与哨兵路径的 ignore 结果。发现已跟踪文件时停止并向用户说明，不自动删除、移动或执行 `git rm --cached`；规则缺失时只在末尾追加 `Drafts/private/`，不覆盖项目已有忽略规则，追加后重复全部检查。
 
-### 8. 执行平台后处理
+### 7. 执行平台后处理
 
 只改变默认显示方式，不删除任何点文件或点目录。
 
@@ -154,31 +131,14 @@ WSL 无法调用 `wslpath` 或 `attrib.exe` 时，Windows interop 不可用；�
 
 macOS、原生 Linux 和 WSL 原生 Linux 文件系统依赖点前缀隐藏语义，跳过本步骤。所有 Git 配置只能使用 `--local`，不使用 `--global` 或 `--system`。
 
-### 9. 建立第一条状态基线
+### 8. 建立第一条状态基线
 
 - 读取并执行 `.skills/checkpoint-recorder/SKILL.md`。
 - 为已经确认并实际落盘的初始化结果创建第一条结果级 Record。
 - 更新 `.records/CURRENT.md`，使它成为真实当前状态入口；不将完整历史堆入 CURRENT。
 - 不为用户确认前的探索对话、试错或命令流水补造历史。
 
-### 10. 执行明确授权的 Star
-
-只有用户明确选择 `确认并 Star`，且前述项目化、清理、平台后处理和状态基线均已成功后，才执行：
-
-```bash
-gh api --method PUT \
-  -H "Accept: application/vnd.github+json" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  -H "Content-Length: 0" \
-  /user/starred/AaronJiTuo/brain-template \
-  --silent
-```
-
-PUT 成功后，再用 `GET /user/starred/AaronJiTuo/brain-template` 只读复核；只有返回 `204` 才报告 Star 已完成。
-
-Star 失败不回滚、不否定已成功的初始化，但必须如实告知用户未完成。不自动登录、安装、扩权、索要或保存 token，不盲目重试。不在 README、Release、Draft、Record、CURRENT 或其他项目文件中记录用户是否 Star 或拒绝 Star。
-
-### 11. 验收与交接
+### 9. 验收并形成初始化完成结果
 
 至少确认：
 
@@ -191,7 +151,46 @@ Star 失败不回滚、不否定已成功的初始化，但必须如实告知用
 - `.records/CURRENT.md` 和首条 Record 反映实际结果；
 - 原生 Windows 或 WSL/Windows 盘的隐藏后处理已复核；不具备平台条件时明确列出未验证边界；
 - Git 差异只包含用户确认的初始化范围，没有覆盖并行修改；
-- 初始化与 Star 的结果分开报告，未执行的仓库改名、Git 交付或平台验收明确列出。
+- 未执行的仓库改名、Git 交付或平台验收已明确列出。
+
+以上项目全部闭环后，核心初始化才算成功。完成结果报告必须先明确初始化已经完成，再进入步骤 10；Star 判定、邀请、授权或失败不得把初始化描述为仍待确认或尚未完成。
+
+### 10. 初始化成功后判定并询问可选 Star
+
+- 如用户在本次请求中已明确表示不要 Star，跳过检测和邀请，只报告初始化完成。
+- 否则执行一次轻量、只读的 `can_offer_star` 判定。只有以下条件全部成立时，才可以显示 Star 邀请：
+  1. 当前环境已安装可执行的 `gh`；
+  2. `gh auth status --hostname github.com` 确认已有活动的用户认证，全程不使用 `--show-token`；
+  3. `gh api user --jq .login` 能可靠返回当前 GitHub 账号；
+  4. 对固定公开仓库执行 `GET /user/starred/AaronJiTuo/brain-template` 时，GitHub 返回 `404`，明确表示当前账号尚未 Star；
+  5. 检测全程不需安装、登录、提供新凭据、扩大权限或触发额外用户批准。
+- `204` 表示已 Star，不邀请。`401`、`403`、不能确认来自固定端点的 `404`、网络失败、超时、响应无效或任何不确定结果都视为 `can_offer_star=false`。不安装、不登录、不请求额外授权，不向用户显示 Star 邀请，也不把跳过视为初始化错误。
+- `can_offer_star=false` 时只报告初始化完成。`can_offer_star=true` 且用户尚未单独明确授权 Star 时，在初始化完成结果之后追加独立、可忽略的邀请：
+
+  > 本次 brain 初始化已经完成。还有一个完全可选的小请求：如果你认同 `brain-template` 让项目知识持续沉淀、让后来的人或 AI agent 能够可靠接手的方式，也欢迎用一个 Star 支持它继续维护。不 Star 完全没关系，不会影响本次初始化结果或后续使用。
+  >
+  > 如愿意，请回复 `Star`，我会使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star；不愿意可直接忽略。
+
+- 邀请不得要求用户回复才能结束初始化，不提供“确认初始化”选项，也不把 Star 包装成初始化步骤。每次初始化最多邀请一次。
+
+### 11. 执行明确授权的 Star
+
+只有用户明确回复 `Star`、明确要求“初始化并 Star”或表达完全等价的独立授权，且步骤 10 的实时判定为 `can_offer_star=true` 时，才执行：
+
+```bash
+gh api --method PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2026-03-10" \
+  -H "Content-Length: 0" \
+  /user/starred/AaronJiTuo/brain-template \
+  --silent
+```
+
+如果 Star 授权来自初始化完成后的下一轮回复，不要重跑初始化；先从首条 Record 与 CURRENT 核对核心初始化已经成功，再重新执行步骤 10 的只读判定，符合条件后执行 PUT。
+
+PUT 成功后，再用 `GET /user/starred/AaronJiTuo/brain-template` 只读复核；只有返回 `204` 才报告 Star 已完成。
+
+Star 失败不回滚、不否定已成功的初始化，但必须如实告知用户未完成。不自动登录、安装、扩权、索要或保存 token，不盲目重试。不在 README、Release、Draft、Record、CURRENT 或其他项目文件中记录用户是否 Star 或拒绝 Star。
 
 初始化完成后保留本 skill。它是模板协议的托管文件，后续在已初始化状态下保持休眠，不以删除 skill 标记完成。
 
@@ -203,4 +202,5 @@ Star 失败不回滚、不否定已成功的初始化，但必须如实告知用
 - 不删除 Draft、Archive 或历史 Record，不为过去补造记录。
 - 不使用 `git config --global` 或 `git config --system`。
 - 不将初始化确认扩张为 Star、GitHub 改名、commit、push、tag、Release 或 PR 授权。
+- 不在核心初始化、状态基线和验收成功前检测、邀请或执行 Star，不把 Star 选择并入项目定义确认。
 - 不在 `brain-initializer` 和 `template-upgrader` 以外的 skill 中增加 Star 逻辑。

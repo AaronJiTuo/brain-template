@@ -5,7 +5,7 @@
   "update_channel": "stable",
   "protocol_version": "2.3.2",
   "protocol_released_at": "2026-08-23",
-  "protocol_summary": "取消稳定升级二次确认，将可选 Star 询问后置",
+  "protocol_summary": "取消升级二次确认，将初始化与升级的可选 Star 询问后置",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",
