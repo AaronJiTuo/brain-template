@@ -157,7 +157,7 @@
    - 如果运行在 WSL/Windows 盘，确认仓库级 `core.hideDotFiles` 为 `true`，并用 `attrib.exe "$(wslpath -w "$item")"` 逐一重新读取根级点路径的 Windows 属性；任何一项缺少 `H` 标记、路径转换失败或 Windows 命令不可用，都视为升级未完成。WSL 原生 Linux 文件系统只验证点前缀和文件存在性，不设置 Windows 属性。
 
    - 确认正常任务结束时只比较最高有效稳定 Release；main 领先、无更新、网络失败、tag/manifest 不一致、无法判断和用户未同意时均不修改、不提示、不阻塞。
-   - 确认只有 `brain-initializer` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；标准升级授权不会触发 Star，upgrader 不会在核心升级完成前判定或邀请 Star，也不会为同一标准升级请求第二次确认。
+   - 确认只有 `brain-initializer`、`brain-handoff` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；三者都先完成各自核心结果，再按条件静默或显示可选邀请。标准升级授权不会触发 Star，upgrader 不会在核心升级完成前判定或邀请 Star，也不会为同一标准升级请求第二次确认。
    - 用 git diff 检查升级只触及模板协议相关内容。
 
 9. 建立升级结果检查点。
@@ -211,7 +211,7 @@
   "update_channel": "stable",
   "protocol_version": "2.3.2",
   "protocol_released_at": "2026-08-23",
-  "protocol_summary": "取消重复确认，将初始化与升级的可选 Star 询问后置，并将正式接手流程 Skill 化",
+  "protocol_summary": "取消重复确认，将初始化、接手与升级的可选 Star 询问后置，并将正式接手流程 Skill 化",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",

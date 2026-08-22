@@ -203,4 +203,4 @@ Star 失败不回滚、不否定已成功的初始化，但必须如实告知用
 - 不使用 `git config --global` 或 `git config --system`。
 - 不将初始化确认扩张为 Star、GitHub 改名、commit、push、tag、Release 或 PR 授权。
 - 不在核心初始化、状态基线和验收成功前检测、邀请或执行 Star，不把 Star 选择并入项目定义确认。
-- 不在 `brain-initializer` 和 `template-upgrader` 以外的 skill 中增加 Star 逻辑。
+- 不在 `brain-initializer`、`brain-handoff` 和 `template-upgrader` 以外的 skill 中增加 Star 逻辑。
