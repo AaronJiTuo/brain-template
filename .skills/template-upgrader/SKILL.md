@@ -157,7 +157,7 @@
    - 如果运行在 WSL/Windows 盘，确认仓库级 `core.hideDotFiles` 为 `true`，并用 `attrib.exe "$(wslpath -w "$item")"` 逐一重新读取根级点路径的 Windows 属性；任何一项缺少 `H` 标记、路径转换失败或 Windows 命令不可用，都视为升级未完成。WSL 原生 Linux 文件系统只验证点前缀和文件存在性，不设置 Windows 属性。
 
    - 确认正常任务结束时只比较最高有效稳定 Release；main 领先、无更新、网络失败、tag/manifest 不一致、无法判断和用户未同意时均不修改、不提示、不阻塞。
-   - 确认只有 `brain-initializer`、`brain-handoff` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；三者都先完成各自核心结果，再按条件静默或显示可选邀请。标准升级授权不会触发 Star，upgrader 不会在核心升级完成前判定或邀请 Star，也不会为同一标准升级请求第二次确认。
+   - 确认只有 `brain-initializer`、`brain-handoff` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；三者都先完成各自核心结果，再按条件静默或显示可选邀请，邀请统一要求用户回复 `确认`，并且只有直接对应当前 Star 邀请的确认才构成授权。标准升级授权不会触发 Star，upgrader 不会在核心升级完成前判定或邀请 Star，也不会为同一标准升级请求第二次确认。
    - 用 git diff 检查升级只触及模板协议相关内容。
 
 9. 建立升级结果检查点。
@@ -178,14 +178,19 @@
    - `204` 表示已 Star，不邀请。`401`、`403`、不能确认来自固定端点的 `404`、网络失败、超时、响应无效或其他不确定结果都视为 `can_offer_star=false`。不安装、不登录、不请求额外授权，不显示 Star 文案，也不影响升级。
    - `can_offer_star=false` 时只报告升级完成。`can_offer_star=true` 且用户尚未明确授权 Star 时，在升级完成报告之后追加独立、可忽略的邀请：
 
-     > 本次 brain 模板升级已经完成。还有一个完全可选的小请求：如果 `brain-template` 确实帮助你持续沉淀项目知识、让后来的人或 AI agent 能够可靠接手，也欢迎用一个 Star 支持项目继续维护。不 Star 完全没关系，不会影响本次升级结果或后续使用。
+     > 本次 brain 模板升级已经完成。还有一个完全可选的小请求：如果你觉得 `brain-template` 本次带来的改进对项目知识沉淀和后续接手有所帮助，也恳请你考虑用一个 Star 支持它继续维护。是否 Star 完全由你决定；不方便或不愿意都没有关系，也绝不会影响本次升级结果或后续使用。
      >
-     > 如愿意，请回复 `Star`，我会使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star；不愿意可直接忽略。
+     > 如果你愿意，烦请回复 `确认`。我会使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star；如果不愿意，直接忽略即可。谢谢你的理解和支持。
 
-   - 邀请不得要求用户回复才能结束升级，不提供“确认升级”选项，也不把 Star 包装成升级步骤。每次升级最多邀请一次；此前拒绝不写入项目状态，后续新的升级仍可重新判定。
+   - 邀请不得要求用户回复才能结束升级，不提供“确认升级”选项，也不把 Star 包装成升级步骤。回复口令 `确认` 只在这条明确 Star 邀请的直接上下文中有效；普通升级确认、其他任务确认或脱离邀请的 `确认` 都不得解释为 Star 授权。每次升级最多邀请一次；此前拒绝不写入项目状态，后续新的升级仍可重新判定。
 
 11. 执行明确授权的 Star。
-   - 只有用户明确回复 `Star`、明确要求“升级并 Star”或表达完全等价的独立授权，且步骤 10 的实时判定为 `can_offer_star=true` 时，才执行：
+   - 只有以下任一独立授权成立，且步骤 10 的实时判定为 `can_offer_star=true` 时，才执行：
+     - 本 skill 已在紧接的升级完成结果中显示上述 Star 邀请，用户随后单独回复 `确认` 或明确表示同意该 Star 邀请；
+     - 用户在本次请求中已明确要求升级完成后点 Star。
+   - 普通升级确认、其他任务确认或无法可靠对应到当前 Star 邀请的 `确认` 均不构成授权。
+
+   - 符合上述条件时执行：
 
      ```bash
      gh api --method PUT \
@@ -196,7 +201,7 @@
        --silent
      ```
 
-   - 如果 Star 授权来自升级完成后的下一轮回复，不要重跑升级；先从升级 Record 与 CURRENT 核对核心升级已经成功，再重新执行步骤 10 的只读判定，符合条件后执行 PUT。
+   - 如果 `确认` 来自升级完成后的下一轮回复，不要重跑升级；先确认该回复直接对应上一条 Star 邀请，并从升级 Record 与 CURRENT 核对核心升级已经成功，再重新执行步骤 10 的只读判定，符合条件后执行 PUT。
    - PUT 成功后，再用 `GET /user/starred/AaronJiTuo/brain-template` 只读复核；只有返回 `204` 才报告 Star 已完成。
    - Star 失败不回滚、不否定已成功的升级，但必须告知用户未完成。不自动登录、安装、扩权、索要或保存 token，不盲目重试。
    - 不在 README、Release、Draft、Record、CURRENT 或其他项目文件中记录用户是否 Star 或拒绝 Star。
@@ -211,7 +216,7 @@
   "update_channel": "stable",
   "protocol_version": "2.3.2",
   "protocol_released_at": "2026-08-23",
-  "protocol_summary": "取消重复确认，将初始化、接手与升级的可选 Star 询问后置，并将正式接手流程 Skill 化",
+  "protocol_summary": "取消重复确认，将初始化、接手与升级的可选 Star 询问后置并统一为带语境保护的‘确认’口令，正式接手流程 Skill 化",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",
@@ -266,6 +271,7 @@
 - 不要使用 `git config --global` 或 `git config --system` 改变用户的点文件隐藏偏好；原生 Windows 与 WSL/Windows 盘的隐藏机制都只允许设置当前仓库的 `core.hideDotFiles`。
 - 不要在核心升级、复核和检查点成功前检测、邀请或执行 Star；不要把普通升级授权解释为 Star 授权。
 - 不要在用户明确授权标准稳定升级后，再以版本、SHA、文件范围、保全边界或 Star 选择为由请求同一升级的第二次确认。
+- 不要把普通升级确认、其他任务确认或脱离当前 Star 邀请的 `确认` 解释为 Star 授权。
 - 不要为 Star 安装 `gh`、登录、扩大凭据权限、索要 PAT、保存 token 或盲目重试。
 - 不要因为发现新版或用户同意升级，就推断用户授权了 commit、pull、push 或任何关联代码库 Git 写操作。
 - 不要用 `main`、Release 日期、列表顺序或 `target_commitish` 代替稳定 Release tag，也不要在稳定检查失败时自动降级为开发快照。
