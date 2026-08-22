@@ -67,6 +67,6 @@
 
 ## 维护与反馈
 
-- 已初始化的 brain 会静默检查正式发布的稳定协议版本；只有发现新版并经用户明确同意后才会升级。详细规则见 [`AGENTS.md`](./AGENTS.md) 和 [`.skills/template-upgrader/SKILL.md`](./.skills/template-upgrader/SKILL.md)。
+- 已初始化的 brain 会静默检查正式发布的稳定协议版本；发现新版并经用户明确同意后，会直接完成标准稳定升级，不重复请求确认。升级成功后才可能单独显示完全可选的 Star 邀请。详细规则见 [`AGENTS.md`](./AGENTS.md) 和 [`.skills/template-upgrader/SKILL.md`](./.skills/template-upgrader/SKILL.md)。
 - 如果你在某个 `*-brain` 中摸索出了可以复用的结构或工作方式，欢迎通过 [Issues](https://github.com/AaronJiTuo/brain-template/issues) 反馈给模板项目。
 - `brain-template` 本身采用 [MIT License](./LICENSE)；由模板创建的具体项目可以根据自身情况决定许可证。

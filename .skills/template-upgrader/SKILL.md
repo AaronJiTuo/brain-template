@@ -28,9 +28,9 @@
 - 升级和 Star 是两个独立动作。Star 完全可选，只有用户显式授权才执行；Star 检测或写入失败不影响升级。
 - 稳定升级只认可正式 GitHub Release 对应 tag 所固定的提交；`main` 和 manifest 中的 `template_ref` 不是稳定发布边界。
 - `managed_files` 表示文件必须存在并由协议同步或受控合并，不表示可以整文件覆盖项目化内容。
-- 当前本地 upgrader 是来源验证、授权和安全边界的引导器；固定目标 SHA 中的 upgrader 是用户最终确认后采用的目标迁移合同。两者冲突时执行更严格的保护规则，目标版本不得削弱本地已有的保全、隐私、权限或 Git 边界。
+- 当前本地 upgrader 是来源验证、授权和安全边界的引导器；固定目标 SHA 中的 upgrader 是用户明确授权标准稳定升级后采用的目标迁移合同。两者冲突时执行更严格的保护规则，目标版本不得削弱本地已有的保全、隐私、权限或 Git 边界。
 
-发现新版不等于获得升级授权。正常任务结束时的版本检查只能读取 Release 元数据和候选 tag 精确 SHA 下的 manifest；不能预取或执行远端 upgrader。用户明确要求升级后，可以从固定 SHA 读取协议文件以分析差异和形成最终确认清单，但在最终确认前仍不得写入或执行升级内容。用户忽略或未明确同意时，什么也不做。
+发现新版不等于获得升级授权。正常任务结束时的版本检查只能读取 Release 元数据和候选 tag 精确 SHA 下的 manifest；不能预取或执行远端 upgrader。用户回复“升级brain模板”“升级”或表达完全等价的明确意图后，即已完整授权标准稳定升级：可以从固定 SHA 读取协议文件、分析差异、用非阻塞进度说明告知范围并直接完成写入、复核和检查点，不得再次请求同一升级的确认。用户忽略或未明确同意时，什么也不做。只有前置核查发现破坏性变化、超出标准协议范围、需要未发布开发快照、额外 Git 交付或其他实质性扩权时，才为新增范围另行请求授权。
 
 ## 升级步骤
 
@@ -49,40 +49,24 @@
    - 将最高版本 Release 的 tag 完全解引用为精确 commit SHA，不使用 Release 的日期、`target_commitish` 或当前 `main` 代替 tag，再从该 SHA 读取 `.brain-template.json`。
    - manifest 必须有效，`template_authority` 必须恰好匹配，`protocol_version` 必须与去掉 `v` 的 tag 版本完全一致；`2.3.1` 及以后还必须明确为 `update_channel: stable`，更早的正式版本可以缺少该字段但不能声明其他通道。
    - 没有正式 Release、最高版本 tag 无法解析、manifest 不匹配或验证不确定时停止，不提示可升级，也不回退到较低 Release 或 `main`。
-   - 选定候选后，再次固定其 tag、精确 SHA 和 Release URL，并从同一个 SHA 读取远端 `.skills/template-upgrader/SKILL.md`、`.skills/brain-initializer/SKILL.md` 和本次需要的所有托管文件；不要混用不同 tag、分支或时间点的内容。最终确认前，这些文件只作为只读差异和迁移清单输入，不获得执行权限。
+   - 选定候选后，再次固定其 tag、精确 SHA 和 Release URL，并从同一个 SHA 读取远端 `.skills/template-upgrader/SKILL.md`、`.skills/brain-initializer/SKILL.md` 和本次需要的所有托管文件；不要混用不同 tag、分支或时间点的内容。只有用户已明确授权标准稳定升级后才读取这些文件并采用目标迁移合同。
    - 如果本次仅因“发现稳定新版”而触发，重新确认选定 `protocol_version` 仍高于本地版本；如果已经没有版本差异，结束升级且不修改文件。
    - 如果本次是修复同版本的缺失协议文件或 bootstrap，可继续使用该可信快照；不得用低于本地 `protocol_version` 的远端内容降级现有 brain。
-   - 只有用户明确要求 `main`、某个分支或某个未发布 SHA 时，才允许开发快照模式：解析 `template_ref` 或用户指定 ref 的精确 SHA，明确说明它不属于稳定 Release，并在最终确认中单独标注。不得把普通“升级到最新版”解释为开发快照授权，也不得在稳定检查失败时自动切换到开发快照。
+   - 只有用户明确要求 `main`、某个分支或某个未发布 SHA 时，才允许开发快照模式：解析 `template_ref` 或用户指定 ref 的精确 SHA，明确说明它不属于稳定 Release，并在执行前的范围说明中单独标注。不得把普通“升级到最新版”解释为开发快照授权，也不得在稳定检查失败时自动切换到开发快照。
 
 3. 判断升级范围。
-   - 对照本地 upgrader 与固定 SHA 中的目标 upgrader：本地版本继续约束来源、用户授权和安全底线；用户最终确认后，以目标 upgrader 定义新增文件、字段和迁移步骤。任何一方要求保留而另一方未提及的项目内容仍必须保留。
+   - 对照本地 upgrader 与固定 SHA 中的目标 upgrader：本地版本继续约束来源、用户授权和安全底线；用户明确授权标准稳定升级后，以目标 upgrader 定义新增文件、字段和迁移步骤。任何一方要求保留而另一方未提及的项目内容仍必须保留。
    - 缺文件则补文件。
    - 旧说明缺少新版协议时，只追加或局部替换相关小节。
    - 已有项目内容优先保留，尤其是 `README.md` 顶部介绍和 `AGENTS.md` 项目专属约束。
    - 对每个 `managed_files` 明确采用“上游同步”还是“受控合并”；README、AGENTS 项目专属约束、CURRENT、`.gitignore` 等项目化文件不得整文件覆盖。
    - 从 1.x 升级到 2.x 会改变默认留痕行为，必须由用户明确要求升级；不要静默启用。
 
-4. 请求最终升级确认，并只读判定可选 Star。
-   - 在任何写入前，向用户展示更新通道、目标版本、Release tag 与 URL（稳定模式）、精确上游 SHA、拟修改文件、受控合并策略、目标 upgrader 将采用的迁移合同、保全边界和已知平台后处理。开发快照必须显著标明“未正式发布”。
-   - 如用户在本次请求中已明确表示不要 Star，不再检测或显示 Star 邀请，只确认升级范围。
-   - 否则对每一次升级执行一次轻量、只读的 `can_offer_star` 判定：
-     1. 当前环境已有可执行的 `gh`；
-     2. `gh auth status --hostname github.com` 确认已有活动的用户认证，不使用 `--show-token`；
-     3. `gh api user --jq .login` 可靠返回当前 GitHub 账号；
-     4. 对固定公开仓库执行 `GET /user/starred/AaronJiTuo/brain-template` 返回 `404`，明确表示当前账号尚未 Star；
-     5. 以上检测不需安装、登录、提供新凭据、扩权或触发额外用户批准。
-   - `204` 表示已 Star，不邀请。`401`、`403`、不能确认来自固定端点的 `404`、网络失败、超时、响应无效或其他不确定结果都视为 `can_offer_star=false`。不安装、不登录、不请求额外授权，不显示 Star 文案，也不影响升级。
-   - 该判定只能证明可以提供选项，不能无副作用预证最终 Star 写权限，因此命名为 `can_offer_star` 而不是 `can_star`。
-   - `can_offer_star=false` 时只请求确认升级，不提及 Star。`can_offer_star=true` 时使用：
-
-     > 以上是本次升级的版本、范围与影响。还有一个完全可选的小请求：如果 `brain-template` 确实帮助你持续沉淀项目知识、让后来的人或 AI agent 能够可靠接手，也欢迎用一个 Star 支持项目继续维护。不 Star 完全没关系，不会影响本次升级或后续使用。
-     >
-     > 请回复：
-     > - `确认并 Star`：执行本次升级，并使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star。
-     > - `仅确认`：只执行本次升级，不执行 Star。
-
-   - 只有 `确认并 Star` 或完全等价的明确语义授权 Star。`仅确认`、普通 `确认`、含糊回复或“请升级，但不要 Star”等排除语义都只授权升级。未获得有效升级确认前保持只读。
-   - 已 Star 时不提示；用户此前拒绝不写入项目状态，只要后续升级时仍未 Star 且检测通过，可再邀请一次。每次升级最多显示一次。
+4. 说明升级范围并直接执行。
+   - 在任何写入前，向用户说明更新通道、目标版本、Release tag 与 URL（稳定模式）、精确上游 SHA、拟修改文件、受控合并策略、目标 upgrader 将采用的迁移合同、保全边界和已知平台后处理。开发快照必须显著标明“未正式发布”。
+   - 该说明是升级过程中的非阻塞进度信息，不是新的确认请求。用户已经明确授权标准稳定升级时，说明后直接继续步骤 5，不等待“确认”“仅确认”或其他重复回复。
+   - 升级请求本身不授权 Star，也不在本步骤检测、询问或执行 Star。如用户已明确表示不要 Star，记住该会话内选择，并在核心升级成功后跳过 Star 判定与邀请；不要把选择写入项目文件或 Record。
+   - 只有核查发现破坏性变化、超出标准协议升级范围、用户并未授权的开发快照、额外 Git 交付、需要处理冲突中的并行修改或其他实质性扩权时才停止，并只为新增范围请求授权。
 
 5. 补齐模板协议文件。
    - `.LICENSE.brain-template`
@@ -151,7 +135,7 @@
    - 确认 `.LICENSE.brain-template` 已存在，且升级没有新增、删除或改写 root `LICENSE`。
    - 确认 `git ls-files -- 'Drafts/private/**'` 没有输出，哨兵路径和 `Drafts/private/` 中每个实际文件均被 `.gitignore` 忽略，且项目原有忽略规则未被覆盖。
    - 确认 `.brain-template.json` 的 `template_authority`、`template_ref`、`update_channel`、`protocol_version`、`protocol_released_at`、`protocol_summary` 和 `managed_files` 与实际文件一致。
-   - 稳定模式确认实际使用的 Release 非 draft、非 prerelease，`v2.3.1` 及以后不可变，tag 版本与 manifest 完全一致，所有远端文件来自该 tag 解析出的同一 SHA；开发快照模式确认最终确认中已明确标注未发布状态。
+   - 稳定模式确认实际使用的 Release 非 draft、非 prerelease，`v2.3.1` 及以后不可变，tag 版本与 manifest 完全一致，所有远端文件来自该 tag 解析出的同一 SHA；开发快照模式确认执行前的范围说明已明确标注未发布状态。
    - 如果运行在原生 Windows，确认当前仓库 `core.hideDotFiles` 的值为 `true`，并重新读取根级点路径的文件属性；任何一项缺少 Hidden 属性都视为升级未完成。可用以下 PowerShell 验收：
 
      ```powershell
@@ -171,7 +155,7 @@
    - 如果运行在 WSL/Windows 盘，确认仓库级 `core.hideDotFiles` 为 `true`，并用 `attrib.exe "$(wslpath -w "$item")"` 逐一重新读取根级点路径的 Windows 属性；任何一项缺少 `H` 标记、路径转换失败或 Windows 命令不可用，都视为升级未完成。WSL 原生 Linux 文件系统只验证点前缀和文件存在性，不设置 Windows 属性。
 
    - 确认正常任务结束时只比较最高有效稳定 Release；main 领先、无更新、网络失败、tag/manifest 不一致、无法判断和用户未同意时均不修改、不提示、不阻塞。
-   - 确认只有 `brain-initializer` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；普通 `确认`、`仅确认`和拒绝语义不会触发 Star。
+   - 确认只有 `brain-initializer` 和 `template-upgrader` 包含 Star 邀请与 PUT 端点；标准升级授权不会触发 Star，upgrader 不会在核心升级完成前判定或邀请 Star，也不会为同一标准升级请求第二次确认。
    - 用 git diff 检查升级只触及模板协议相关内容。
 
 9. 建立升级结果检查点。
@@ -180,8 +164,26 @@
    - 更新 `.records/CURRENT.md` 中的当前协议版本、来源 SHA、近期变化、文档与现实漂移及仍需处理的事项；不把完整升级日志堆入 CURRENT。
    - Star 的邀请、选择、账号和执行结果均不得进入 Record 或 CURRENT。检查点失败时如实报告升级尚未闭环，不执行 Star。
 
-10. 执行明确授权的 Star。
-   - 只有用户明确选择 `确认并 Star`，且步骤 5—9 的核心升级、复核和检查点均已成功时，才执行：
+10. 核心升级成功后判定并询问可选 Star。
+   - 只有步骤 5—9 的核心升级、复核和检查点均已成功后，才进入本步骤。最终报告必须先明确升级已经完成；Star 判定、邀请、授权或失败都不得把升级描述为仍待确认或尚未完成。
+   - 如用户在本次请求中已明确表示不要 Star，跳过检测和邀请，直接报告升级完成。
+   - 否则执行一次轻量、只读的 `can_offer_star` 判定：
+     1. 当前环境已有可执行的 `gh`；
+     2. `gh auth status --hostname github.com` 确认已有活动的用户认证，不使用 `--show-token`；
+     3. `gh api user --jq .login` 可靠返回当前 GitHub 账号；
+     4. 对固定公开仓库执行 `GET /user/starred/AaronJiTuo/brain-template` 返回 `404`，明确表示当前账号尚未 Star；
+     5. 以上检测不需安装、登录、提供新凭据、扩权或触发额外用户批准。
+   - `204` 表示已 Star，不邀请。`401`、`403`、不能确认来自固定端点的 `404`、网络失败、超时、响应无效或其他不确定结果都视为 `can_offer_star=false`。不安装、不登录、不请求额外授权，不显示 Star 文案，也不影响升级。
+   - `can_offer_star=false` 时只报告升级完成。`can_offer_star=true` 且用户尚未明确授权 Star 时，在升级完成报告之后追加独立、可忽略的邀请：
+
+     > 本次 brain 模板升级已经完成。还有一个完全可选的小请求：如果 `brain-template` 确实帮助你持续沉淀项目知识、让后来的人或 AI agent 能够可靠接手，也欢迎用一个 Star 支持项目继续维护。不 Star 完全没关系，不会影响本次升级结果或后续使用。
+     >
+     > 如愿意，请回复 `Star`，我会使用当前 GitHub 账号 `<账号>` 为 `AaronJiTuo/brain-template` 点 Star；不愿意可直接忽略。
+
+   - 邀请不得要求用户回复才能结束升级，不提供“确认升级”选项，也不把 Star 包装成升级步骤。每次升级最多邀请一次；此前拒绝不写入项目状态，后续新的升级仍可重新判定。
+
+11. 执行明确授权的 Star。
+   - 只有用户明确回复 `Star`、明确要求“升级并 Star”或表达完全等价的独立授权，且步骤 10 的实时判定为 `can_offer_star=true` 时，才执行：
 
      ```bash
      gh api --method PUT \
@@ -192,6 +194,7 @@
        --silent
      ```
 
+   - 如果 Star 授权来自升级完成后的下一轮回复，不要重跑升级；先从升级 Record 与 CURRENT 核对核心升级已经成功，再重新执行步骤 10 的只读判定，符合条件后执行 PUT。
    - PUT 成功后，再用 `GET /user/starred/AaronJiTuo/brain-template` 只读复核；只有返回 `204` 才报告 Star 已完成。
    - Star 失败不回滚、不否定已成功的升级，但必须告知用户未完成。不自动登录、安装、扩权、索要或保存 token，不盲目重试。
    - 不在 README、Release、Draft、Record、CURRENT 或其他项目文件中记录用户是否 Star 或拒绝 Star。
@@ -204,9 +207,9 @@
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
   "update_channel": "stable",
-  "protocol_version": "2.3.1",
-  "protocol_released_at": "2026-08-21",
-  "protocol_summary": "修正初始化与稳定升级，强化隐私、元数据与发布完整性",
+  "protocol_version": "2.3.2",
+  "protocol_released_at": "2026-08-23",
+  "protocol_summary": "取消稳定升级二次确认，将可选 Star 询问后置",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",
@@ -241,7 +244,7 @@
 请按最新 brain-template 协议升级当前 brain，读取 GitHub AaronJiTuo/brain-template 仓库中 .skills/template-upgrader/SKILL.md 执行。
 ```
 
-完成一次支持稳定版本检查的协议 bootstrap 后，该项目会在以后每次正常任务结束时静默检查正式 GitHub Releases：没有新版或检查失败时不提示，发现更高的有效稳定版本时询问用户，只有用户明确同意后才使用本 skill 升级。main 上尚未形成正式 Release 的版本不会触发稳定升级提醒。
+完成一次支持稳定版本检查的协议 bootstrap 后，该项目会在以后每次正常任务结束时静默检查正式 GitHub Releases：没有新版或检查失败时不提示，发现更高的有效稳定版本时询问用户。用户明确同意后即直接完成标准稳定升级，不再为同一升级请求第二次确认；核心升级和检查点成功后，才独立判定是否显示可选 Star 邀请。main 上尚未形成正式 Release 的版本不会触发稳定升级提醒。
 
 版本检查与升级流程不启用自动 Git 协作。检查、提醒、升级过程及后续 Record 创建不得自动执行 `git add`、`commit`、`pull`、`fetch`、`rebase`、`merge` 或 `push`；用户另行明确要求的 Git 交付是独立任务。
 
@@ -258,9 +261,10 @@
 - 不要覆盖、重排或删除下游 `.gitignore`；只在实际未忽略 `Drafts/private/` 时追加最小规则并复核。
 - 不要把忽略规则命中等同于私密内容安全；已被 Git 跟踪或被反向规则放行的 `Drafts/private/` 文件都必须停止并报告。
 - 不要使用 `git config --global` 或 `git config --system` 改变用户的点文件隐藏偏好；原生 Windows 与 WSL/Windows 盘的隐藏机制都只允许设置当前仓库的 `core.hideDotFiles`。
-- 不要在用户明确选择 `确认并 Star` 之前执行 Star，不要把普通升级确认解释为 Star 授权。
+- 不要在核心升级、复核和检查点成功前检测、邀请或执行 Star；不要把普通升级授权解释为 Star 授权。
+- 不要在用户明确授权标准稳定升级后，再以版本、SHA、文件范围、保全边界或 Star 选择为由请求同一升级的第二次确认。
 - 不要为 Star 安装 `gh`、登录、扩大凭据权限、索要 PAT、保存 token 或盲目重试。
 - 不要因为发现新版或用户同意升级，就推断用户授权了 commit、pull、push 或任何关联代码库 Git 写操作。
 - 不要用 `main`、Release 日期、列表顺序或 `target_commitish` 代替稳定 Release tag，也不要在稳定检查失败时自动降级为开发快照。
-- 不要在用户明确要求升级前读取远端 upgrader 或托管文件；版本检查阶段只能读取 Release 元数据和候选 tag 精确 SHA 下的 manifest。用户要求升级后允许只读分析固定 SHA 的协议文件，但最终确认前不得写入或把远端指令当作已获执行授权。
+- 不要在用户明确要求升级前读取远端 upgrader 或托管文件；版本检查阶段只能读取 Release 元数据和候选 tag 精确 SHA 下的 manifest。用户明确要求标准稳定升级后，允许读取并采用固定 SHA 的目标迁移合同，给出非阻塞范围说明后直接执行；远端指令仍不得削弱本地安全边界或扩张用户授权。
 - 不要在 `github.com/AaronJiTuo/brain-template` 权威源仓自身执行下游 upgrader。

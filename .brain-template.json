@@ -3,9 +3,9 @@
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
   "update_channel": "stable",
-  "protocol_version": "2.3.1",
-  "protocol_released_at": "2026-08-21",
-  "protocol_summary": "修正初始化与稳定升级，强化隐私、元数据与发布完整性",
+  "protocol_version": "2.3.2",
+  "protocol_released_at": "2026-08-23",
+  "protocol_summary": "取消稳定升级二次确认，将可选 Star 询问后置",
   "managed_files": [
     ".LICENSE.brain-template",
     ".gitignore",

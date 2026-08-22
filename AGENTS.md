@@ -86,7 +86,7 @@
 2. 从固定 GitHub 仓库列出正式 Releases，排除 draft、prerelease 和非标准 `vX.Y.Z` tag，先按 SemVer 选出版本最高的一项；`v2.3.1` 及以后还必须由 GitHub 明确返回 `immutable: true`，更早的历史 Release 可兼容非不可变状态。再将其 tag 解析为精确 commit SHA，并从该 SHA 只读获取 manifest。tag 版本必须与 `protocol_version` 完全一致、权威来源必须匹配，且 `update_channel` 必须为 `stable`；为兼容字段引入前的正式版本，`2.3.1` 之前的 manifest 可以缺少 `update_channel`，但不能声明其他通道。最高版本验证失败时不回退到较低 Release，也不以 `main`、Release 日期或 `target_commitish` 代替正式版本边界。
 3. 将最高有效稳定版本与本地 `protocol_version` 比较。没有有效 Release、没有新版、网络或权限失败、返回无效、tag 与 manifest 不一致或无法可靠判断时，完全不提示，也不影响原任务。
 4. 只有确认稳定版本更高时，才在原任务结果末尾附加一条可忽略的提醒，写明当前版本、最新版本和 manifest 中的更新摘要，询问用户是否升级。提醒、忽略或拒绝不创建 Record、不更新 CURRENT、不执行任何写入。
-5. 用户明确同意后，下一轮才读取并执行 `template-upgrader`；正式升级使用该 Release tag 所解析出的同一精确 SHA 获取 manifest、upgrader 和托管文件。`template_ref` 只用于用户明确要求的未发布开发快照，不参与稳定版发现。
+5. 用户回复“升级brain模板”“升级”或表达完全等价的明确意图后，该回复即构成本次标准稳定升级的完整授权。下一轮读取并执行 `template-upgrader`，把版本、SHA、文件范围和保全边界作为非阻塞进度说明后直接完成升级，不再请求同一升级的第二次确认；只有发现破坏性变化、超出标准协议范围、需要开发快照、额外 Git 交付或其他实质性扩权时才另行请求相应授权。正式升级使用该 Release tag 所解析出的同一精确 SHA 获取 manifest、upgrader 和托管文件；核心升级与检查点成功后，才按 upgrader 规则独立判定并询问可选 Star。`template_ref` 只用于用户明确要求的未发布开发快照，不参与稳定版发现。
 6. 用户明确禁止联网、任务尚未结束、仅在等待或过程汇报、当前任务本身是模板检查或升级、当前仓库是权威模板仓库时，跳过检查且不提示。
 
 ---
