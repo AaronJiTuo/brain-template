@@ -215,7 +215,7 @@
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
   "update_channel": "stable",
-  "protocol_version": "2.3.2",
+  "protocol_version": "2.4.0",
   "protocol_released_at": "2026-08-23",
   "protocol_summary": "取消重复确认，将初始化、接手与升级的可选 Star 询问后置并统一为带语境保护的‘确认’口令，正式接手流程 Skill 化",
   "managed_files": [
