@@ -217,7 +217,7 @@
   "template_authority": "github.com/AaronJiTuo/brain-template",
   "template_ref": "main",
   "update_channel": "stable",
-  "protocol_version": "2.5.0",
+  "protocol_version": "2.4.1",
   "protocol_released_at": "2026-09-14",
   "protocol_summary": "升级提示与完成后 Star 邀请优先使用当前 agent 的原生选项，支持忽略并绑定明确行动授权",
   "managed_files": [
